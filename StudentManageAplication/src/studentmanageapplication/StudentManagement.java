@@ -245,13 +245,12 @@ public class StudentManagement {
     private void removeStudentByStudentCode() {
         if (!studentList.isEmpty()) {
             String studentCode = inputString("Please enter student code: ");
-            for (Student student : studentList) {
-                if (student.getStudentCode().equalsIgnoreCase(studentCode)) {
-                    studentList.remove(student);
-                    System.out.println("Removed student have an student code: " + studentCode);
-                } else {
-                    System.out.println("Not found student have an student code: " + studentCode);
-                }
+            Student studentToRemove = findStudentByStudentCode(studentCode);
+            if (studentToRemove != null) {
+                studentList.remove(studentToRemove);
+                System.out.println("Removed student have an student code: " + studentCode);
+            } else {
+                System.out.println("Not found student have an student code: " + studentCode);
             }
         } else {
             System.out.println("List student is empty.");
