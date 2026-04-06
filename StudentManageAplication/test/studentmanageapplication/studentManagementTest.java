@@ -159,4 +159,96 @@ public class studentManagementTest {
         assertTrue("Output should contain CA456", output.contains("CA456"));
         assertTrue("Output should contain Nguyen Van An", output.contains("Nguyen Van An"));
     }
+
+    @Test
+    public void testSortName_EmptyList() {
+        System.out.println("Abnormal Test: sortName with empty list");
+        instance.studentList.clear(); // Đảm bảo list trống
+
+        // Chặn luồng output để kiểm tra thông báo
+        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
+        System.setOut(new java.io.PrintStream(outContent));
+
+        instance.sortName();
+
+        assertTrue("Should notify that list is empty",
+                outContent.toString().contains("The student list is empty"));
+        assertTrue("Sorted list should be empty", instance.studentSortedList.isEmpty());
+    }
+
+    //--------------------------------- abnormal case ------------------------------------//
+    @Test
+    public void testAddInvalid() {
+        String badInput = "Gia Bao\nbaogmail.com\nbao@@gmail.com\ngiabao@gmail.com\nPass123\n";
+        simulateInput(badInput);
+        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
+        System.setOut(new java.io.PrintStream(outContent));
+        instance.addStudent();
+        String output = outContent.toString();
+        String errorMsg = "Invalid email format";
+        int errorCount = (output.split(errorMsg, -1).length) - 1;
+        assertTrue(output.contains(errorMsg));
+        assertEquals(2, errorCount);
+        Student s = instance.studentList.get(instance.studentList.size() - 1);
+        assertEquals("gia bao", s.getFullName());
+        assertEquals("giabao@gmail.com", s.getEmail());
+        assertEquals("pass123", s.getPassword());
+        assertTrue(s.getStudentCode().startsWith("CA"));
+    }
+
+    @Test
+    public void testRemoveStudent_InvalidOption() {
+        System.out.println("Abnormal Test: removeStudent with invalid menu option");
+        // Kịch bản: Nhập "abc" (sai), sau đó "exit" để thoát
+        simulateInput("abc\nexit\n");
+
+        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
+        System.setOut(new java.io.PrintStream(outContent));
+
+        instance.removeStudent();
+
+        assertTrue("Should notify invalid option",
+                outContent.toString().contains("Invalid option!"));
+    }
+
+    @Test
+    public void testDisplayTableEmptyList() {
+        System.out.println("Abnormal Test: displayTable with empty list");
+        instance.studentList.clear();
+        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
+        System.setOut(new java.io.PrintStream(outContent));
+        instance.displayTable();
+        assertTrue("Should notify list is empty", outContent.toString().contains("List of student is emplty"));
+    }
+
+    @Test
+    public void testEditStudent_NotFound() {
+        System.out.println("Abnormal Test: editStudent with non-existent code");
+        simulateInput("CA999\n");
+        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
+        System.setOut(new java.io.PrintStream(outContent));
+        instance.editStudent();
+        assertTrue("Should notify student not found", outContent.toString().contains("Not found student have student code: ca999"));
+    }
+
+    @Test
+    public void testSearchStudent_NoResult() {
+        System.out.println("Abnormal Test: SearchStudentByStudentCode with no result");
+        simulateInput("NOT_EXIST\n");
+        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
+        System.setOut(new java.io.PrintStream(outContent));
+        instance.SearchStudentByStudentCode();
+        assertTrue("Should notify not found", outContent.toString().contains("Not found not_exist"));
+    }
+
+    @Test
+    public void testSortNameEmptyList() {
+        System.out.println("Abnormal Test: sortName with empty list");
+        instance.studentList.clear();
+        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
+        System.setOut(new java.io.PrintStream(outContent));
+        instance.sortName();
+        assertTrue("Should notify that list is empty", outContent.toString().contains("The student list is empty"));
+        assertTrue("Sorted list should be empty", instance.studentSortedList.isEmpty());
+    }
 }
