@@ -217,7 +217,7 @@ public class studentManagementTest {
     }
 
     @Test
-    public void testEditStudent_NotFound() {
+    public void testEditStudentNotFound() {
         System.out.println("Abnormal Test: editStudent with non-existent code");
         simulateInput("CA999\n");
         java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
@@ -227,7 +227,7 @@ public class studentManagementTest {
     }
 
     @Test
-    public void testSearchStudent_NoResult() {
+    public void testSearchStudentNoResult() {
         System.out.println("Abnormal Test: SearchStudentByStudentCode with no result");
         simulateInput("NOT_EXIST\n");
         java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
