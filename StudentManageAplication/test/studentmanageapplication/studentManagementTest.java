@@ -197,18 +197,13 @@ public class studentManagementTest {
     }
 
     @Test
-    public void testRemoveStudent_InvalidOption() {
+    public void testRemoveStudentInvalidOption() {
         System.out.println("Abnormal Test: removeStudent with invalid menu option");
-        // Kịch bản: Nhập "abc" (sai), sau đó "exit" để thoát
         simulateInput("abc\nexit\n");
-
         java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
         System.setOut(new java.io.PrintStream(outContent));
-
         instance.removeStudent();
-
-        assertTrue("Should notify invalid option",
-                outContent.toString().contains("Invalid option!"));
+        assertTrue("Should notify invalid option",outContent.toString().contains("Invalid option!"));
     }
 
     @Test
