@@ -108,20 +108,20 @@ public class studentManagementTest {
     }
 
     @Test
-    public void testRemoveStudentAll() {
-        System.out.println("Test: removeStudent (Option 'all')");
-        simulateInput("all\nexit\n");
-        instance.removeStudent();
-        assertTrue("Student list should be empty", instance.studentList.isEmpty());
-    }
-
-    @Test
     public void testRemoveStudentByCode() {
         System.out.println("Test: removeStudent (Option 'code')");
         simulateInput("code\nca123\nexit\n");
         instance.removeStudent();
         assertEquals("Student list size should be 1", 1, instance.studentList.size());
         assertEquals("Remaining student should be CA456", "CA456", instance.studentList.get(0).getStudentCode());
+    }
+
+    @Test
+    public void testRemoveStudentAll() {
+        System.out.println("Test: removeStudent (Option 'all')");
+        simulateInput("all\nexit\n");
+        instance.removeStudent();
+        assertTrue("Student list should be empty", instance.studentList.isEmpty());
     }
 
     @Test

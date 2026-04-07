@@ -64,7 +64,7 @@ public class MenuManagement {
                         flag = true;
                         break;
                     case 7:
-                        System.out.println("option7");
+                        System.out.println("Exit application");
                         flag = false;
                         break;
                     default:
@@ -105,7 +105,7 @@ public class MenuManagement {
         System.out.println("========================================");
     }
 
-    public String inputChoice() {
+    private String inputChoice() {
         String choice;
         System.out.print("Please enter  your otion: ");
         choice = scanner.nextLine();
