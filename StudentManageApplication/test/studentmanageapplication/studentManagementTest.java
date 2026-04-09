@@ -216,28 +216,32 @@ public class studentManagementTest {
                 + "Type 'exit' to exit feature remove.\n"
                 + "Please type your select: ";
         String actualResult = rawOutput.substring(prompt.length()).trim();
-        String expectedResult = "Invalid option! Please type 'all', 'code', or 'exit'."
+        assertEquals("Invalid option! Please type 'all', 'code', or 'exit'."
                 + System.lineSeparator()
                 + prompt
-                + "Exit remove feature";
-        assertEquals(expectedResult, actualResult);
+                + "Exit remove feature", actualResult);
     }
 
     @Test
     public void testRemoveStudentByCodeNotFound() {
         System.out.println("Abnormal Test 4.2: Remove by code but code not found");
-        simulateInput("code\nca999\nexit\n");
+        simulateInput("code\nca999\n");
         PrintStream originalOut = System.out;
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
+        instance.removeStudent();
+        System.setOut(originalOut);
         String rawOutput = outContent.toString();
-        String prompt = "Type 'all' to remove all student.\n"
+        String menuPrompt = "Type 'all' to remove all student.\n"
                 + "Type 'code' to remove student by code.\n"
                 + "Type 'exit' to exit feature remove.\n"
                 + "Please type your select: ";
-        String cleanOutput = rawOutput.replace(prompt, "").trim();
-
-    } //sai logic test
+        String Prompt = "Please enter student code: ";
+        String actualResult = rawOutput.replace(menuPrompt, "")
+                .replace(Prompt, "")
+                .trim();
+        assertEquals("Not found student have an student code: ca999", actualResult);
+    }
 
     @Test
     public void testRemoveStudentAllEmptyList() {
