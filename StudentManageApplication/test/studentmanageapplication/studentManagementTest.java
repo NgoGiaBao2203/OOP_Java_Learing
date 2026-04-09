@@ -205,10 +205,21 @@ public class studentManagementTest {
     public void testRemoveStudentInvalidOption() {
         System.out.println("Abnormal Test 4.1: Remove student with invalid menu option");
         simulateInput("abc\nexit\n");
+        PrintStream originalOut = System.out;
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
         instance.removeStudent();
-        assertTrue("Should notify invalid option", outContent.toString().contains("Invalid option! Please type 'all', 'code', or 'exit'."));
+        System.setOut(originalOut);
+        String rawOutput = outContent.toString();
+        String prompt = "Type 'all' to remove all student.\n"
+                + "Type 'code' to remove student by code.\n"
+                + "Type 'exit' to exit feature remove.\n"
+                + "Please type your select: ";
+        String cleanOutput = rawOutput.replace(prompt, "").trim();
+        String expectedResult = "Invalid option! Please type 'all', 'code', or 'exit'."
+                + System.lineSeparator()
+                + "Exit remove feature";
+        assertEquals(expectedResult, cleanOutput);
     } //sai logic test
 
     @Test
@@ -233,19 +244,19 @@ public class studentManagementTest {
         System.setOut(originalOut);
         String rawOutput = outContent.toString().trim();
         String prompt = ("Type 'all' to remove all student.\n"
-                    + "Type 'code' to remove student by code.\n"
-                    + "Type 'exit' to exit feature remove.\n"
-                    + "Please type your select: ");
-        String actualResult = rawOutput.substring(prompt.length());
+                + "Type 'code' to remove student by code.\n"
+                + "Type 'exit' to exit feature remove.\n"
+                + "Please type your select: ");
+        String actualResult = rawOutput.substring(prompt.length()).trim();
         assertEquals("List student is empty.", actualResult);
-    } //sai logic test
+    }
 
     @Test
     public void testSearchStudentByStudentCodeNotFound() {
         System.out.println("Abnormal Test 5: Search with no result");
         simulateInput("ca999");
         PrintStream originalOut = System.out;
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();    
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
         instance.SearchStudentByStudentCode();
         System.setOut(originalOut);
@@ -255,17 +266,17 @@ public class studentManagementTest {
         assertEquals("Not found ca999", actualResult);
     } //đã refactor test  (Test mẫu)
 
-@Test
+    @Test
     public void testSortNameEmptyList() {
         System.out.println("Abnormal Test 6: Sort with empty list");
         instance.studentList.clear();
         PrintStream originalOut = System.out;
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent)); 
+        System.setOut(new PrintStream(outContent));
         instance.sortName();
         System.setOut(originalOut);
-        String rawOutput = outContent.toString(); 
-        String actualResult = rawOutput.trim(); 
-        assertEquals("The student list is empty. It cannot be sorted!", actualResult);  
+        String rawOutput = outContent.toString();
+        String actualResult = rawOutput.trim();
+        assertEquals("The student list is empty. It cannot be sorted!", actualResult);
     }
 }
