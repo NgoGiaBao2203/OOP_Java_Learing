@@ -163,43 +163,51 @@ public class studentManagementTest {
     }
 
     //--------------------------------- abnormal case ------------------------------------//
-    @Test
+@Test
     public void testDisplayTableEmptyList() {
         System.out.println("Abnormal Test 1: Display with empty list");
-        instance.studentList.clear();
+        instance.studentList.clear();      
+        PrintStream originalOut = System.out;
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new java.io.PrintStream(outContent));
+        System.setOut(new PrintStream(outContent));
         instance.displayTable();
-        assertTrue("Should notify that the list is empty", outContent.toString().contains("List of student is emplty!"));
-    } // sai logic test
+        System.setOut(originalOut);
+        String rawOutput = outContent.toString().trim(); 
+        assertEquals("List of student is emplty!", rawOutput); 
+    }
 
-    @Test
+   @Test
     public void testAddStudentInvalidEmail() {
         System.out.println("Abnormal Test 2: Add student with invalid emails before valid one");
+        int sizeBefore = instance.studentList.size();
         String invalidInput = "Le Thi B\n"
                 + "saiemail.com\n"
                 + "sai@email@com\n"
                 + "dung@gmail.com\n"
                 + "pass123\n";
         simulateInput(invalidInput);
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
         instance.addStudent();
-        String output = outContent.toString();
-        assertTrue("Should show invalid email warning", output.contains("Invalid email format. Please try again!"));
-        Student addedStudent = instance.studentList.get(instance.studentList.size() - 1);
-        assertEquals("dung@gmail.com", addedStudent.getEmail()); // kiem tra lai assert
-    } //sai logic test
+        assertEquals(sizeBefore + 1, instance.studentList.size());
+        Student lastStudent = instance.studentList.get(instance.studentList.size() - 1);
+        assertEquals("le thi b", lastStudent.getFullName());
+        assertEquals("dung@gmail.com", lastStudent.getEmail());   
+        assertEquals("pass123", lastStudent.getPassword());
+    }
 
     @Test
     public void testEditStudentNotFound() {
         System.out.println("Abnormal Test 3: Edit student with non-existent code");
         simulateInput("CA999\n");
+        PrintStream originalOut = System.out;
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
         instance.editStudent();
-        assertTrue("Should notify student not found", outContent.toString().contains("Not found student have student code: ca999"));
-    } // sai logic test
+        System.setOut(originalOut);
+        String rawOutput = outContent.toString();
+        String prompt = "Please enter student code: ";
+        String actualResult = rawOutput.substring(prompt.length()).trim();
+        assertEquals("Not found student have student code: ca999", actualResult);
+    } 
 
     @Test
     public void testRemoveStudentInvalidOption() {
