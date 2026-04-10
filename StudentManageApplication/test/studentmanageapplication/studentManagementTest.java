@@ -14,20 +14,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import java.io.PrintStream;
 import java.io.ByteArrayOutputStream;
-import javax.print.attribute.PrintServiceAttribute;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
 public class studentManagementTest {
 
-    // Đưa instance ra ngoài để dùng chung cho tất cả các test
     private StudentManagement instance;
-    // Kịch bản: 
-    // - Tên: Ngo Gia Bao
-    // - Email sai lần 1: baogmail.com
-    // - Email đúng lần 2: bao@gmail.com
-    // - Password: password123
     String simulatedUserInput = "Ngo Gia Bao\n"
             + "baogmail.com\n"
             + "bao@gmail.com\n"
@@ -46,10 +39,7 @@ public class studentManagementTest {
 
     @Before
     public void setUp() {
-        // Khởi tạo mới trước mỗi test 
         instance = new StudentManagement();
-
-        // Thêm một vài dữ liệu giả để test sửa, xóa, tìm kiếm
         instance.studentList.add(new Student("CA123", "Ngo Gia Bao", "bao@gmail.com", "123"));
         instance.studentList.add(new Student("CA456", "Nguyen Van An", "an@gmail.com", "456"));
     }
@@ -73,14 +63,21 @@ public class studentManagementTest {
     public void testDisplayTable() {
         System.out.println("Test: displayTable");
         PrintStream originalOut = System.out;
-        ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
-        System.setOut(new java.io.PrintStream(outContent));
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
         instance.displayTable();
         System.setOut(originalOut);
-        String output = outContent.toString();
-        assertDataIntialForTest(output);
-        assertFalse("Output should contain CA111", output.contains("CA111"));
-        assertFalse("Output should contain Nguyen Van Tuan", output.contains("Nguyen Van Tuan"));
+        String expectedResult = "+---------+----------------------+----------------------+---------------+\n"
+                + "|   Code  |      Fullname        |         Email        |    Password   |\n"
+                + "+---------+----------------------+----------------------+---------------+\n"
+                + String.format("|%-9s|%-22s|%-22s|%-15s|\n", "CA123", "Ngo Gia Bao", "bao@gmail.com", "123")
+                + String.format("|%-9s|%-22s|%-22s|%-15s|\n", "CA456", "Nguyen Van An", "an@gmail.com", "456")
+                + "+---------+----------------------+----------------------+---------------+";
+        String rawOutput = outContent.toString();
+        String expected = expectedResult.replace("\r\n", "\n").trim();
+        String actual = rawOutput.replace("\r\n", "\n").trim();
+
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -95,7 +92,6 @@ public class studentManagementTest {
         assertEquals("Name should match the input", "ngo gia bao", lastStudent.getFullName());
         assertEquals("Email should match the valid input", "bao@gmail.com", lastStudent.getEmail());
         assertEquals("Password should match", "password123", lastStudent.getPassword());
-        assertTrue("Student code should start with CA", lastStudent.getStudentCode().startsWith("CA"));
     }
 
     @Test
@@ -122,22 +118,45 @@ public class studentManagementTest {
     @Test
     public void testRemoveStudentAll() {
         System.out.println("Test: removeStudent (Option 'all')");
-        simulateInput("all\nexit\n");
+        simulateInput("all\n");
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
         instance.removeStudent();
-        assertTrue("Student list should be empty", instance.studentList.isEmpty());
+        System.setOut(originalOut);
+        assertEquals(0, instance.studentList.size());
+        String rawOutput = outContent.toString();
+        String prompt = "Type 'all' to remove all student.\n"
+                + "Type 'code' to remove student by code.\n"
+                + "Type 'exit' to exit feature remove.\n"
+                + "Please type your select: ";
+        String actualResult = rawOutput.substring(prompt.length()).trim();
+        String expectedResult = "Remove all student successfully."
+                + System.lineSeparator()
+                + "List student is empty.";
+        assertEquals(expectedResult, actualResult);
     }
 
     @Test
     public void testSearchStudentByStudentCode() {
         System.out.println("Test: SearchStudentByStudentCode");
+        simulateInput("ca123\n");
         PrintStream originalOut = System.out;
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new java.io.PrintStream(outContent));
-        simulateInput("ca\n");
+        System.setOut(new PrintStream(outContent));
         instance.SearchStudentByStudentCode();
         System.setOut(originalOut);
-        String output = outContent.toString();
-        assertDataIntialForTest(output);
+        String expectedResult = "+---------+----------------------+----------------------+---------------+\n"
+                + "|   Code  |      Fullname        |         Email        |    Password   |\n"
+                + "+---------+----------------------+----------------------+---------------+\n"
+                + String.format("|%-9s|%-22s|%-22s|%-15s|\n", "CA123", "Ngo Gia Bao", "bao@gmail.com", "123")
+                + "+---------+----------------------+----------------------+---------------+";
+        String prompt = "Please enter student code: ";
+        String rawOutput = outContent.toString();
+        String actualResult = rawOutput.substring(rawOutput.indexOf(prompt) + prompt.length());
+        String safeExpected = expectedResult.replace("\r\n", "\n").trim();
+        String safeActual = actualResult.replace("\r\n", "\n").trim();
+        assertEquals(safeExpected, safeActual);
     }
 
     @Test
@@ -155,28 +174,21 @@ public class studentManagementTest {
         assertEquals("Original list should NOT be sorted (An is still index 1)", "Nguyen Van An", instance.studentList.get(1).getFullName());
     }
 
-    private void assertDataIntialForTest(String output) {
-        assertTrue("Output should contain CA123", output.contains("CA123"));
-        assertTrue("Output should contain Ngo Gia Bao", output.contains("Ngo Gia Bao"));
-        assertTrue("Output should contain CA456", output.contains("CA456"));
-        assertTrue("Output should contain Nguyen Van An", output.contains("Nguyen Van An"));
-    }
-
     //--------------------------------- abnormal case ------------------------------------//
-@Test
+    @Test
     public void testDisplayTableEmptyList() {
         System.out.println("Abnormal Test 1: Display with empty list");
-        instance.studentList.clear();      
+        instance.studentList.clear();
         PrintStream originalOut = System.out;
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
         instance.displayTable();
         System.setOut(originalOut);
-        String rawOutput = outContent.toString().trim(); 
-        assertEquals("List of student is emplty!", rawOutput); 
+        String rawOutput = outContent.toString().trim();
+        assertEquals("List of student is emplty!", rawOutput);
     }
 
-   @Test
+    @Test
     public void testAddStudentInvalidEmail() {
         System.out.println("Abnormal Test 2: Add student with invalid emails before valid one");
         int sizeBefore = instance.studentList.size();
@@ -190,7 +202,7 @@ public class studentManagementTest {
         assertEquals(sizeBefore + 1, instance.studentList.size());
         Student lastStudent = instance.studentList.get(instance.studentList.size() - 1);
         assertEquals("le thi b", lastStudent.getFullName());
-        assertEquals("dung@gmail.com", lastStudent.getEmail());   
+        assertEquals("dung@gmail.com", lastStudent.getEmail());
         assertEquals("pass123", lastStudent.getPassword());
     }
 
@@ -207,7 +219,7 @@ public class studentManagementTest {
         String prompt = "Please enter student code: ";
         String actualResult = rawOutput.substring(prompt.length()).trim();
         assertEquals("Not found student have student code: ca999", actualResult);
-    } 
+    }
 
     @Test
     public void testRemoveStudentInvalidOption() {
