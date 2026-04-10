@@ -15,8 +15,6 @@ import org.junit.Test;
 import java.io.PrintStream;
 import java.io.ByteArrayOutputStream;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 
 public class studentManagementTest {
 
@@ -76,7 +74,6 @@ public class studentManagementTest {
         String rawOutput = outContent.toString();
         String expected = expectedResult.replace("\r\n", "\n").trim();
         String actual = rawOutput.replace("\r\n", "\n").trim();
-
         assertEquals(expected, actual);
     }
 
@@ -154,9 +151,9 @@ public class studentManagementTest {
         String prompt = "Please enter student code: ";
         String rawOutput = outContent.toString();
         String actualResult = rawOutput.substring(rawOutput.indexOf(prompt) + prompt.length());
-        String safeExpected = expectedResult.replace("\r\n", "\n").trim();
-        String safeActual = actualResult.replace("\r\n", "\n").trim();
-        assertEquals(safeExpected, safeActual);
+        String expected = expectedResult.replace("\r\n", "\n").trim();
+        String actual = actualResult.replace("\r\n", "\n").trim();
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -167,7 +164,7 @@ public class studentManagementTest {
         System.setOut(new PrintStream(outContent));
         instance.sortName();
         System.setOut(originalOut);
-        String output = outContent.toString(); // code không dùng thi clear
+        String output = outContent.toString().trim();
         assertEquals("Nguyen Van An", instance.studentSortedList.get(0).getFullName());
         assertEquals("Ngo Gia Bao", instance.studentSortedList.get(1).getFullName());
         assertEquals("Original list should NOT be sorted (Bao is still index 0)", "Ngo Gia Bao", instance.studentList.get(0).getFullName());
@@ -199,8 +196,8 @@ public class studentManagementTest {
                 + "pass123\n";
         simulateInput(invalidInput);
         instance.addStudent();
-        assertEquals(sizeBefore + 1, instance.studentList.size());
         Student lastStudent = instance.studentList.get(instance.studentList.size() - 1);
+        assertEquals(sizeBefore + 1, instance.studentList.size());
         assertEquals("le thi b", lastStudent.getFullName());
         assertEquals("dung@gmail.com", lastStudent.getEmail());
         assertEquals("pass123", lastStudent.getPassword());
@@ -295,7 +292,7 @@ public class studentManagementTest {
         String prompt = "Please enter student code: ";
         String actualResult = rawOutput.substring(prompt.length()).trim();
         assertEquals("Not found ca999", actualResult);
-    } //đã refactor test  (Test mẫu)
+    } //đã refactor test (test mẫu)
 
     @Test
     public void testSortNameEmptyList() {
