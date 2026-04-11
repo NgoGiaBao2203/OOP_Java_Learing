@@ -106,10 +106,22 @@ public class studentManagementTest {
     @Test
     public void testRemoveStudentByCode() {
         System.out.println("Test: removeStudent (Option 'code')");
-        simulateInput("code\nca123\nexit\n");
+        simulateInput("code\nca123\n");
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
         instance.removeStudent();
-        assertEquals("Student list size should be 1", 1, instance.studentList.size());
-        assertEquals("Remaining student should be CA456", "CA456", instance.studentList.get(0).getStudentCode());
+        System.setOut(originalOut);
+        String rawOutput = outContent.toString();
+        String prompt = "Type 'all' to remove all student.\n"
+                + "Type 'code' to remove student by code.\n"
+                + "Type 'exit' to exit feature remove.\n"
+                + "Please type your select: ";
+        String actualResult = rawOutput.substring(prompt.length()).trim();
+        String expectedResult = "Please enter student code: " 
+                + "Removed student have an student code: ca123";
+        assertEquals(expectedResult, actualResult);
+        assertEquals(1, instance.studentList.size());
     }
 
     @Test
