@@ -118,10 +118,14 @@ public class studentManagementTest {
                 + "Type 'exit' to exit feature remove.\n"
                 + "Please type your select: ";
         String actualResult = rawOutput.substring(prompt.length()).trim();
-        String expectedResult = "Please enter student code: " 
+        String expectedResult = "Please enter student code: "
                 + "Removed student have an student code: ca123";
         assertEquals(expectedResult, actualResult);
+        Student remainingStudent = instance.studentList.get(0);
         assertEquals(1, instance.studentList.size());
+        assertEquals("Nguyen Van An", remainingStudent.getFullName());
+        assertEquals("an@gmail.com", remainingStudent.getEmail());
+        assertEquals("456", remainingStudent.getPassword());
     }
 
     @Test
@@ -144,6 +148,7 @@ public class studentManagementTest {
                 + System.lineSeparator()
                 + "List student is empty.";
         assertEquals(expectedResult, actualResult);
+        assertEquals(0, instance.studentList.size());
     }
 
     @Test
@@ -289,6 +294,7 @@ public class studentManagementTest {
                 + "Please type your select: ");
         String actualResult = rawOutput.substring(prompt.length()).trim();
         assertEquals("List student is empty.", actualResult);
+        assertEquals(0, instance.studentList.size());
     }
 
     @Test
@@ -304,7 +310,7 @@ public class studentManagementTest {
         String prompt = "Please enter student code: ";
         String actualResult = rawOutput.substring(prompt.length()).trim();
         assertEquals("Not found ca999", actualResult);
-    } //đã refactor test (test mẫu)
+    } 
 
     @Test
     public void testSortNameEmptyList() {
