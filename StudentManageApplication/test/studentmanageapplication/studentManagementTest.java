@@ -85,7 +85,7 @@ public class studentManagementTest {
         instance.addStudent();
         assertEquals("Student list size should increase by 1", sizeBefore + 1, instance.studentList.size());
         Student lastStudent = instance.studentList.get(instance.studentList.size() - 1);
-        assertEquals(3, instance.studentList.size());
+        assertEquals(sizeBefore + 1, instance.studentList.size());
         assertEquals("Name should match the input", "ngo gia bao", lastStudent.getFullName());
         assertEquals("Email should match the valid input", "bao@gmail.com", lastStudent.getEmail());
         assertEquals("Password should match", "password123", lastStudent.getPassword());
