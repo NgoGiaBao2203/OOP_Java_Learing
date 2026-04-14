@@ -16,11 +16,16 @@ public class MenuManagement {
 
     Scanner scanner;
     StaffManagement staffManagement;
+    SubmenuForRemove submenuForRemove;
+    SubmenuForEdit submenuForEdit;
+
     private final String NUMBER_REGEX = "^\\d+$";
     Pattern NUMER_PATTERN;
 
     public MenuManagement() {
         staffManagement = new StaffManagement();
+        submenuForRemove = new SubmenuForRemove(staffManagement);
+        submenuForEdit = new SubmenuForEdit(staffManagement);
         scanner = new Scanner(System.in);
         NUMER_PATTERN = Pattern.compile(NUMBER_REGEX);
     }
@@ -52,20 +57,20 @@ public class MenuManagement {
                         flag = true;
                         break;
                     case 4:
-                        
+                        submenuForEdit.SubmenuForEditOptions();
                         flag = true;
                         break;
                     case 5:
-                        
+                        submenuForRemove.SubmenuForRemoveOptions();
                         flag = true;
                         break;
                     case 6:
-                        
+
                         flag = true;
                         break;
                     case 7:
-                        
-                        flag = true;    
+
+                        flag = true;
                         break;
                     case 8:
                         System.out.println("Exit application");
@@ -95,6 +100,13 @@ public class MenuManagement {
         }
     }
 
+    private String inputChoice() {
+        String choice;
+        System.out.print("Please enter  your option: ");
+        choice = scanner.nextLine();
+        return choice;
+    }
+
     private void menuOptions() {
         System.out.println("========================================");
         System.out.println("|        STUDENT MANAGEMENT APP         |");
@@ -109,12 +121,4 @@ public class MenuManagement {
         System.out.println("| 8. Exit application                   |");
         System.out.println("========================================");
     }
-
-    private String inputChoice() {
-        String choice;
-        System.out.print("Please enter  your otion: ");
-        choice = scanner.nextLine();
-        return choice;
-    }
-
 }

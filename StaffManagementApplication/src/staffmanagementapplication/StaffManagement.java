@@ -13,22 +13,107 @@ import java.util.Scanner;
  */
 public class StaffManagement {
 
-    private ArrayList<Staff> staffList;
+    public ArrayList<Staff> staffList;
     Scanner scanner;
 
     public StaffManagement() {
         staffList = new ArrayList<Staff>();
         scanner = new Scanner(System.in);
+    }
+    
+    public void editHourlyWage() {
+        if (!staffList.isEmpty()) {
+            String StaffID = inputString("Please enter staff ID to edit: ");
+            Staff staffToEdit = findStaffByStaffID(StaffID);
+            if (staffToEdit != null) {
+                System.out.println("Current hourly wage: " + staffToEdit.getHourlyWage());
+                String newWage = inputString("Enter new hourly wage: ");
+                staffToEdit.setHourlyWage(newWage);
+                System.out.println("Update hourly wage successfully!");
+            } else {
+                System.out.println("Not found staff " + StaffID);
+            }
+        } else {
+            System.out.println("List staff is empty");
+        }
+    }
 
+    public void editPosition() {
+        if (!staffList.isEmpty()) {
+            String StaffID = inputString("Please enter Staff ID to edit: ");
+            Staff staffToEdit = findStaffByStaffID(StaffID);
+            if (staffToEdit != null) {
+                System.out.println("Current Position: " + staffToEdit.getPosition());
+                String newPosition = inputString("Enter new position: ");
+                staffToEdit.setPosition(newPosition);
+                System.out.println("Update position successfully!");
+            } else {
+                System.out.println("Not found staff " + StaffID);
+            }
+        } else {
+            System.out.println("List staff is empty");
+        }
+    }
+
+    public void editFullName() {
+        if (!staffList.isEmpty()) {
+            String StaffID = inputString("Please enter Staff ID to edit: ");
+            Staff staffToEdit = findStaffByStaffID(StaffID);
+            if (staffToEdit != null) {
+                System.out.println("Current full Name: " + staffToEdit.getFullName());
+                String newName = inputString("Enter new full Name: ");
+                staffToEdit.setFullName(newName);
+                System.out.println("Update full Name successfully!");
+            } else {
+                System.out.println("Not found staff " + StaffID);
+            }
+        } else {
+            System.out.println("List staff is empty");
+        }
+    }
+
+    public void removeAllStaff() {
+        if (!staffList.isEmpty()) {
+            staffList.removeAll(staffList);
+            System.out.println("Remove all staff successfully");
+        } else {
+            System.out.println("List staff empty");
+        }
+    }
+
+    public void removeMultipleStaffByStaffID() {
+        if (!staffList.isEmpty()) {
+            String StaffIDs = inputString("Please enter multiple staff ID: ");
+            String[] idsToRemove = StaffIDs.split("\\s+");
+            removeMultipleIDs(idsToRemove);
+            System.out.println("Removed multiple staff successfully");
+        } else {
+            System.out.println("List staff is empty");
+        }
+    }
+
+    public void removeStaffByStaffID() {
+        if (!staffList.isEmpty()) {
+            String StaffID = inputString("Please enter staff ID: ");
+            Staff staffToRemove = findStaffByStaffID(StaffID);
+            if (staffToRemove != null) {
+                staffList.remove(staffToRemove);
+                System.out.println("Removed staff successfully");
+            } else {
+                System.out.println("Not found staff ID ");
+            }
+        } else {
+            System.out.println("List staff is empty");
+        }
     }
 
     public void SearchStaffByStaffID() {
         String keyword = inputString("Please enter staff ID: ");
         ArrayList<Staff> result = findStaffForSearch(keyword);
-        if(!result.isEmpty()) {
+        if (!result.isEmpty()) {
             displayTable(result);
         } else {
-             System.out.println("Not found " + keyword);
+            System.out.println("Not found " + keyword);
         }
     }
 
@@ -41,10 +126,11 @@ public class StaffManagement {
         staffList.add(staff);
         System.out.println("Add staff successfully!");
     }
+
     public void displayTable(ArrayList<Staff> staffList) {
         if (!staffList.isEmpty()) {
             System.out.println("+---------+----------------------+----------------------+---------------+");
-            System.out.println("|   Code  |      Fullname        |       Position       |  Hourly Wage  |");
+            System.out.println("|    ID   |      Fullname        |       Position       |  Hourly Wage  |");
             System.out.println("+---------+----------------------+----------------------+---------------+");
             for (Staff staff : staffList) {
                 System.out.printf(
@@ -64,7 +150,7 @@ public class StaffManagement {
     public void displayTable() {
         if (!staffList.isEmpty()) {
             System.out.println("+---------+----------------------+----------------------+---------------+");
-            System.out.println("|   Code  |      Fullname        |       Position       |  Hourly Wage  |");
+            System.out.println("|    ID   |      Fullname        |       Position       |  Hourly Wage  |");
             System.out.println("+---------+----------------------+----------------------+---------------+");
             for (Staff staff : staffList) {
                 System.out.printf(
@@ -79,6 +165,30 @@ public class StaffManagement {
         } else {
             System.out.println("List of student is emplty!");
         }
+    }
+
+    private void removeMultipleIDs(String[] idsToRemove) {
+        for (int i = 0; i < idsToRemove.length; i++) {
+            String id = idsToRemove[i];
+            if (id.isEmpty()) {
+                continue;
+            }
+            Staff staffToRemove = findStaffByStaffID(id);
+            if (staffToRemove != null) {
+                staffList.remove(staffToRemove);
+            } else {
+                System.out.println("Not found staff ID: " + id.toUpperCase());
+            }
+        }
+    }
+
+    private Staff findStaffByStaffID(String staffCode) {
+        for (Staff staff : staffList) {
+            if (staff.getStaffID().equalsIgnoreCase(staffCode)) {
+                return staff;
+            }
+        }
+        return null;
     }
 
     private ArrayList<Staff> findStaffForSearch(String StaffID) {

@@ -1,0 +1,99 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package staffmanagementapplication;
+
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ *
+ * @author giaba
+ */
+public class SubmenuForRemove {
+
+    Scanner scanner;
+    StaffManagement staffManagement;
+    private final String NUMBER_REGEX = "^\\d+$";
+    Pattern NUMER_PATTERN;
+
+    public SubmenuForRemove(StaffManagement sharedStaffManagement) {
+        staffManagement = sharedStaffManagement;
+        scanner = new Scanner(System.in);
+        NUMER_PATTERN = Pattern.compile(NUMBER_REGEX);
+    }
+
+    public void SubmenuForRemoveOptions() {
+        Boolean flag;
+        Integer selectedOption;
+        String choice;
+        Boolean choiceValidate;
+        do {
+            flag = true;
+            SubmenuOptions();
+            choice = inputChoice();
+            choiceValidate = validateChoice(choice);
+            if (choiceValidate) {
+                flag = true;
+                selectedOption = Integer.parseInt(choice);
+                switch (selectedOption) {
+                    case 1:
+                        staffManagement.removeStaffByStaffID();
+                        flag = true;
+                        break;
+                    case 2:
+                        staffManagement.removeMultipleStaffByStaffID();
+                        flag = true;
+                        break;
+                    case 3:
+                        staffManagement.removeAllStaff();
+                        flag = true;
+                        break;
+                    case 4:
+                        flag = false;
+                        break;
+                    default:
+                        flag = true;
+                        break;
+                }
+            }
+        } while (flag);
+    }
+
+    private Boolean validateChoice(String choice) {
+        Matcher numberMatcher = NUMER_PATTERN.matcher(choice);
+        if (!numberMatcher.matches()) {
+            System.out.println("Please enter a number (1-4)");
+            return false;
+        } else {
+            int numberChoice = Integer.parseInt(choice);
+            if (numberChoice >= 1 && numberChoice <= 4) {
+                return true;
+            } else {
+                System.out.println("Please choose a number between 1 and 4");
+                return false;
+            }
+        }
+    }
+
+    private String inputChoice() {
+        String choice;
+        System.out.print("Please enter  your option remove: ");
+        choice = scanner.nextLine();
+        return choice;
+    }
+
+    private void SubmenuOptions() {
+        System.out.println("======================================");
+        System.out.println("|           REMOVE OPTIONS           |");
+        System.out.println("======================================");
+        System.out.println("| 1. Remove staff by ID              |");
+        System.out.println("| 2. Remove multiple staff by ID     |");
+        System.out.println("| 3. Remove all staff                |");
+        System.out.println("| 4. Back to main menu               |");
+        System.out.println("======================================");
+    }
+
+}
