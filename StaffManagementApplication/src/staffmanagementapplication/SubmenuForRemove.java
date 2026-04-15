@@ -95,5 +95,4 @@ public class SubMenuForRemove {
         System.out.println("| 4. Back to main menu               |");
         System.out.println("======================================");
     }
-
 }
