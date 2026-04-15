@@ -43,9 +43,8 @@ public class StaffManagementTest {
     @Before
     public void setUp() {
         instance = new StaffManagement();
-        // Cập nhật Constructor có 5 tham số (totalWorkingHours = 0.0)
-        instance.staffList.add(new Staff("NV100", "Ngo Gia Bao", "Thu Ngan", "30", 0.0));
-        instance.staffList.add(new Staff("NV101", "Tran Van An", "BA", "40", 0.0));
+        instance.staffList.add(new Staff("NV100", "Vo Minh Duy", "Thu Ngan", "30", 0.0));
+        instance.staffList.add(new Staff("NV101", "Tran Quoc Ba", "BA", "40", 0.0));
     }
 
     @After
@@ -62,17 +61,17 @@ public class StaffManagementTest {
     //--------------------------------- Normal case ------------------------------------//
     @Test
     public void testDisplayTable() {
-        System.out.println("Test: displayTable");
+        System.out.println("1. Test: display table");
         PrintStream originalOut = System.out;
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
         instance.displayTable();
         System.setOut(originalOut);
         String expectedResult = "+---------+----------------------+----------------------+---------------+---------------+\n"
-                + "|   ID    |        Fullname      |       Position       |  Hourly Wage  |  Total Hours  |\n"
+                + "|   ID    |       Fullname       |       Position       |  Hourly Wage  |  Total Hours  |\n"
                 + "+---------+----------------------+----------------------+---------------+---------------+\n"
-                + String.format("|%-9s|%-22s|%-22s|%-15s|%-15.2f|\n", "NV100", "Ngo Gia Bao", "Thu Ngan", "30", 0.0)
-                + String.format("|%-9s|%-22s|%-22s|%-15s|%-15.2f|\n", "NV101", "Tran Van An", "BA", "40", 0.0)
+                + String.format("|%-9s|%-22s|%-22s|%-15s|%-15.2f|\n", "NV100", "Vo Minh Duy", "Thu Ngan", "30", 0.0)
+                + String.format("|%-9s|%-22s|%-22s|%-15s|%-15.2f|\n", "NV101", "Tran Quoc Ba", "BA", "40", 0.0)
                 + "+---------+----------------------+----------------------+---------------+---------------+";
         String rawOutput = outContent.toString();
         String expected = expectedResult.replace("\r\n", "\n").trim();
@@ -82,7 +81,7 @@ public class StaffManagementTest {
 
     @Test
     public void testAddStaff() {
-        System.out.println("Test: addStaff");
+        System.out.println("2. Test: add staff");
         int sizeBefore = instance.staffList.size();
         simulateInput(simulatedUserInput);
         PrintStream originalOut = System.out;
@@ -98,7 +97,7 @@ public class StaffManagementTest {
 
     @Test
     public void testEditFullName() {
-        System.out.println("Test: editFullName");
+        System.out.println("3. Test: edit full name");
         String simulatedInput = "nv100\nngo gia bao edited\n";
         simulateInput(simulatedInput);
         PrintStream originalOut = System.out;
@@ -106,12 +105,38 @@ public class StaffManagementTest {
         instance.editFullName();
         System.setOut(originalOut);
         Staff editedStaff = instance.staffList.get(0);
-        assertEquals("Name should be updated", "ngo gia bao edited", editedStaff.getFullName());
+        assertEquals("ngo gia bao edited", editedStaff.getFullName());
+    }
+
+    @Test
+    public void testEditPosition() {
+        System.out.println("3.1. Test: edit position");
+        String simulatedInput = "nv101\nleader\n";
+        simulateInput(simulatedInput);
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(new ByteArrayOutputStream()));
+        instance.editPosition();
+        System.setOut(originalOut);
+        Staff editedStaff = instance.staffList.get(1);
+        assertEquals("leader", editedStaff.getPosition());
+    }
+
+    @Test
+    public void testEditHourlyWage() {
+        System.out.println("3.2. Test: edit hourly wage");
+        String simulatedInput = "nv101\n10\n";
+        simulateInput(simulatedInput);
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(new ByteArrayOutputStream()));
+        instance.editHourlyWage();
+        System.setOut(originalOut);
+        Staff editedStaff = instance.staffList.get(1);
+        assertEquals("10", editedStaff.getHourlyWage());
     }
 
     @Test
     public void testRemoveStaffByStaffID() {
-        System.out.println("Test: removeStaffByStaffID");
+        System.out.println("Test: remove staff by staff ID");
         simulateInput("nv100\n");
         PrintStream originalOut = System.out;
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -125,23 +150,22 @@ public class StaffManagementTest {
         assertEquals(expectedResult, actualResult);
         assertEquals(1, instance.staffList.size());
         Staff remainingStaff = instance.staffList.get(0);
-        assertEquals("Tran Van An", remainingStaff.getFullName());
+        assertEquals("Tran Quoc Ba", remainingStaff.getFullName());
     }
 
     @Test
     public void testSearchStaffByStaffID() {
-        System.out.println("Test: SearchStaffByStaffID");
+        System.out.println("Test: Search staff by staff ID");
         simulateInput("nv100\n");
-
         PrintStream originalOut = System.out;
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
         instance.SearchStaffByStaffID();
         System.setOut(originalOut);
         String expectedResult = "+---------+----------------------+----------------------+---------------+---------------+\n"
-                + "|   ID    |        Fullname      |       Position       |  Hourly Wage  |  Total Hours  |\n"
+                + "|   ID    |       Fullname       |       Position       |  Hourly Wage  |  Total Hours  |\n"
                 + "+---------+----------------------+----------------------+---------------+---------------+\n"
-                + String.format("|%-9s|%-22s|%-22s|%-15s|%-15.2f|\n", "NV100", "Ngo Gia Bao", "Thu Ngan", "30", 0.0)
+                + String.format("|%-9s|%-22s|%-22s|%-15s|%-15.2f|\n", "NV100", "Vo Minh Duy", "Thu Ngan", "30", 0.0)
                 + "+---------+----------------------+----------------------+---------------+---------------+";
         String prompt = "Please enter staff ID: ";
         String rawOutput = outContent.toString();
@@ -172,13 +196,13 @@ public class StaffManagementTest {
         System.setOut(originalOut);
         String rawOutput = outContent.toString().trim();
         assertEquals("List of student is emplty!", rawOutput);
+        assertEquals(0, instance.staffList.size());
     }
 
     @Test
     public void testRemoveStaffByStaffIDNotFound() {
         System.out.println("Abnormal Test: Remove staff not found");
         simulateInput("nv999\n");
-
         PrintStream originalOut = System.out;
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
@@ -188,5 +212,6 @@ public class StaffManagementTest {
         String prompt = "Please enter staff ID: ";
         String actualResult = rawOutput.substring(prompt.length()).trim();
         assertEquals("Not found staff ID", actualResult);
+        assertEquals(2, instance.staffList.size());
     }
 }
