@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -25,7 +26,8 @@ public class StaffManagement {
 
     public ArrayList<Staff> staffList;
     private final String STAFF_FILE = "staff_data.txt";
-    private HashMap<String, LocalDateTime> checkInRecords;
+    private final Pattern WAGE_PATTERN = Pattern.compile("^\\d+(\\.\\d+)?$");
+    private final HashMap<String, LocalDateTime> checkInRecords;
     public Scanner scanner;
 
     public StaffManagement() {
@@ -51,7 +53,7 @@ public class StaffManagement {
         }
     }
 
-    public double calculateSalaryForOneStaff(Staff staff) throws NumberFormatException {
+    public double calculateSalaryForOneStaff(Staff staff) {
         double wage = Double.parseDouble(staff.getHourlyWage());
         return wage * staff.getTotalWorkingHours();
     }
@@ -76,7 +78,7 @@ public class StaffManagement {
                 LocalDateTime outTime = LocalDateTime.now();
                 Duration duration = Duration.between(inTime, outTime);
                 double secondsWorked = duration.toSeconds();
-                double hoursWorked = secondsWorked / 3600.0;       
+                double hoursWorked = secondsWorked / 3600.0;
                 double newTotal = staff.getTotalWorkingHours() + hoursWorked;
                 staff.setTotalWorkingHours(newTotal);
                 checkInRecords.remove(staff.getStaffID());
@@ -191,7 +193,7 @@ public class StaffManagement {
         staff.setStaffID(generateStaffID());
         staff.setFullName(inputString("Please enter full name: "));
         staff.setPosition(inputString("Please enter position: "));
-        staff.setHourlyWage(inputString("Please enter hourly wage: "));
+        staff.setHourlyWage(inputStringWage("Please enter hourly wage: "));
         staffList.add(staff);
         System.out.println("Add staff successfully!");
     }
@@ -297,7 +299,7 @@ public class StaffManagement {
                     }
                 }
             }
-            System.out.println("Data loaded successfully!");
+            System.out.println("Data loaded successfully");
         }
     }
 
@@ -314,9 +316,9 @@ public class StaffManagement {
             fw.write(this.checkInRecords.size() + "\n");
             for (Map.Entry<String, LocalDateTime> entry : this.checkInRecords.entrySet()) {
                 fw.write(entry.getKey() + "\n");
-                fw.write(entry.getValue().toString() + "\n"); // Lưu giờ dưới dạng String ISO-8601
+                fw.write(entry.getValue().toString() + "\n");
             }
-            System.out.println("Data saved successfully to " + STAFF_FILE);
+            System.out.println("Data saved successfully");
         }
     }
 
@@ -335,9 +337,9 @@ public class StaffManagement {
         }
     }
 
-    private Staff findStaffByStaffID(String staffCode) {
+    private Staff findStaffByStaffID(String staffID) {
         for (Staff staff : staffList) {
-            if (staff.getStaffID().equalsIgnoreCase(staffCode)) {
+            if (staff.getStaffID().equalsIgnoreCase(staffID)) {
                 return staff;
             }
         }
@@ -375,6 +377,23 @@ public class StaffManagement {
             }
         }
         return false;
+    }
+
+    private String inputStringWage(String title) {
+        String input;
+        String result = "";
+        boolean flag = true;
+        while (flag) {
+            System.out.print(title);
+            input = scanner.nextLine().trim().toLowerCase();
+            if (WAGE_PATTERN.matcher(input).matches()) {
+                 result = input;
+                 flag = false;
+            } else {
+                System.out.println("Invalid wage format! Please enter a valid positive number");
+            }
+        }
+        return result;
     }
 
     private String inputString(String title) {

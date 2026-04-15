@@ -127,7 +127,7 @@ public class MenuManagement {
 
     private void menuOptions() {
         System.out.println("========================================");
-        System.out.println("|        STUDENT MANAGEMENT APP        |");
+        System.out.println("|       STAFF MANAGEMENT OPTIONS       |");
         System.out.println("========================================");
         System.out.println("| 1. Display all staff                 |");
         System.out.println("| 2. Add new staff                     |");
@@ -138,7 +138,7 @@ public class MenuManagement {
         System.out.println("| 7. Calculate monthly salary          |");
         System.out.println("| 8. Check-in                          |");
         System.out.println("| 9. Check-out                         |");
-        System.out.println("| 10. Exit application                 |");
+        System.out.println("| 10. Exit application and save file   |");
         System.out.println("========================================");
     }
 }
