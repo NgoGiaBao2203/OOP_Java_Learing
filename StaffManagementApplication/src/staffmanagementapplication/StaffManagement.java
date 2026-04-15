@@ -26,7 +26,7 @@ public class StaffManagement {
     public ArrayList<Staff> staffList;
     private final String STAFF_FILE = "staff_data.txt";
     private HashMap<String, LocalDateTime> checkInRecords;
-    Scanner scanner;
+    public Scanner scanner;
 
     public StaffManagement() {
         staffList = new ArrayList<Staff>();
