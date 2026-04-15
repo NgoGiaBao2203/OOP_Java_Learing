@@ -1,0 +1,21 @@
+4
+NV100
+ngo gia bao
+dev
+25
+0.0
+NV101
+nguyen van tuan
+ba
+30
+0.0
+NV102
+tran van teo
+solution architect
+30
+0.0
+NV103
+nguyen thi minh thu
+tester
+25
+0.0

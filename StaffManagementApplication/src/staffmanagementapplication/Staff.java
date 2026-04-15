@@ -9,16 +9,27 @@ package staffmanagementapplication;
  * @author giaba
  */
 public class Staff {
+
     private String staffID;
     private String fullName;
     private String position;
     private String hourlyWage;
+    private double totalWorkingHours;
 
-    public Staff(String staffID, String fullName, String position, String hourlyWage) {
+    public Staff(String staffID, String fullName, String position, String hourlyWage, double totalWorkingHours) {
         this.staffID = staffID;
         this.fullName = fullName;
         this.position = position;
         this.hourlyWage = hourlyWage;
+        this.totalWorkingHours = totalWorkingHours;
+    }
+
+    public double getTotalWorkingHours() {
+        return totalWorkingHours;
+    }
+
+    public void setTotalWorkingHours(double totalWorkingHours) {
+        this.totalWorkingHours = totalWorkingHours;
     }
 
     public String getStaffID() {
@@ -52,10 +63,4 @@ public class Staff {
     public void setHourlyWage(String hourlyWage) {
         this.hourlyWage = hourlyWage;
     }
-    
-    
 }
-
-
-
-

@@ -74,10 +74,18 @@ public class MenuManagement {
                         flag = true;
                         break;
                     case 7:
-
+                        staffManagement.calculateMonthlySalary();
                         flag = true;
                         break;
-                    case 8:                      
+                    case 8:
+                        staffManagement.checkIn();
+                        flag = true;
+                        break;
+                    case 9:
+                        staffManagement.checkOut();
+                        flag = true;
+                        break;
+                    case 10:                     
                         System.out.println("Exit application");
                         try {
                             staffManagement.saveStaffFile();
@@ -97,14 +105,14 @@ public class MenuManagement {
     private Boolean validateChoice(String choice) {
         Matcher numberMatcher = NUMER_PATTERN.matcher(choice);
         if (!numberMatcher.matches()) {
-            System.out.println("Please enter a number (1-8)");
+            System.out.println("Please enter a number (1-10)");
             return false;
         } else {
             int numberChoice = Integer.parseInt(choice);
-            if (numberChoice >= 1 && numberChoice <= 8) {
+            if (numberChoice >= 1 && numberChoice <= 10) {
                 return true;
             } else {
-                System.out.println("Please choose a number between 1 and 8");
+                System.out.println("Please choose a number between 1 and 10");
                 return false;
             }
         }
@@ -119,16 +127,18 @@ public class MenuManagement {
 
     private void menuOptions() {
         System.out.println("========================================");
-        System.out.println("|        STUDENT MANAGEMENT APP         |");
+        System.out.println("|        STUDENT MANAGEMENT APP        |");
         System.out.println("========================================");
-        System.out.println("| 1. Display all staff                  |");
-        System.out.println("| 2. Add new staff                      |");
-        System.out.println("| 3. Search staff                       |");
-        System.out.println("| 4. Edit staff                         |");
-        System.out.println("| 5. Remove staff                       |");
-        System.out.println("| 6. sort by name                       |");
-        System.out.println("| 7. Calculate monthly salary           |");
-        System.out.println("| 8. Exit application                   |");
+        System.out.println("| 1. Display all staff                 |");
+        System.out.println("| 2. Add new staff                     |");
+        System.out.println("| 3. Search staff                      |");
+        System.out.println("| 4. Edit staff                        |");
+        System.out.println("| 5. Remove staff                      |");
+        System.out.println("| 6. sort by name                      |");
+        System.out.println("| 7. Calculate monthly salary          |");
+        System.out.println("| 8. Check-in                          |");
+        System.out.println("| 9. Check-out                         |");
+        System.out.println("| 10. Exit application                 |");
         System.out.println("========================================");
     }
 }
