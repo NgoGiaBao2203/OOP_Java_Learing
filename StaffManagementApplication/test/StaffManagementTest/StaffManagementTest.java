@@ -61,7 +61,7 @@ public class StaffManagementTest {
     //--------------------------------- Normal case ------------------------------------//
     @Test
     public void testDisplayTable() {
-        System.out.println("1. Test: display table");
+        System.out.println("Test 1: display table");
         PrintStream originalOut = System.out;
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
@@ -81,7 +81,7 @@ public class StaffManagementTest {
 
     @Test
     public void testAddStaff() {
-        System.out.println("2. Test: add staff");
+        System.out.println("Test 2: add staff");
         int sizeBefore = instance.staffList.size();
         simulateInput(simulatedUserInput);
         PrintStream originalOut = System.out;
@@ -97,7 +97,7 @@ public class StaffManagementTest {
 
     @Test
     public void testEditFullName() {
-        System.out.println("3. Test: edit full name");
+        System.out.println("Test 3: edit full name");
         String simulatedInput = "nv100\nngo gia bao edited\n";
         simulateInput(simulatedInput);
         PrintStream originalOut = System.out;
@@ -110,7 +110,7 @@ public class StaffManagementTest {
 
     @Test
     public void testEditPosition() {
-        System.out.println("3.1. Test: edit position");
+        System.out.println("Test 3.1: edit position");
         String simulatedInput = "nv101\nleader\n";
         simulateInput(simulatedInput);
         PrintStream originalOut = System.out;
@@ -123,7 +123,7 @@ public class StaffManagementTest {
 
     @Test
     public void testEditHourlyWage() {
-        System.out.println("3.2. Test: edit hourly wage");
+        System.out.println("Test 3.2: edit hourly wage");
         String simulatedInput = "nv101\n10\n";
         simulateInput(simulatedInput);
         PrintStream originalOut = System.out;
@@ -136,7 +136,7 @@ public class StaffManagementTest {
 
     @Test
     public void testRemoveStaffByStaffID() {
-        System.out.println("Test: remove staff by staff ID");
+        System.out.println("Test 4: remove staff by staff ID");
         simulateInput("nv100\n");
         PrintStream originalOut = System.out;
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -155,7 +155,7 @@ public class StaffManagementTest {
 
     @Test
     public void testSearchStaffByStaffID() {
-        System.out.println("Test: Search staff by staff ID");
+        System.out.println("Test 5: Search staff by staff ID");
         simulateInput("nv100\n");
         PrintStream originalOut = System.out;
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -177,7 +177,7 @@ public class StaffManagementTest {
 
     @Test
     public void testCalculateSalaryForOneStaff() {
-        System.out.println("Test: calculateSalaryForOneStaff");
+        System.out.println("Test 6: calculateSalaryForOneStaff");
         Staff testStaff = new Staff("NV999", "Test", "Test", "50", 10.5);
         double expectedSalary = 50 * 10.5;
         double actualSalary = instance.calculateSalaryForOneStaff(testStaff);
@@ -187,7 +187,7 @@ public class StaffManagementTest {
     //--------------------------------- abnormal case ------------------------------------//
     @Test
     public void testDisplayTableEmptyList() {
-        System.out.println("Abnormal Test: Display with empty list");
+        System.out.println("Abnormal Test 1: Display with empty list");
         instance.staffList.clear();
         PrintStream originalOut = System.out;
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -200,8 +200,29 @@ public class StaffManagementTest {
     }
 
     @Test
+    public void testAddStaffInvalid() {
+        System.out.println("Abnormal Test 2: Add staff with invalid then valid wage");
+        simulateInput("Vo Trung Nguyen\nlao cong\n33a\n33\n");
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        instance.addStaff();
+        System.setOut(originalOut);
+        String rawOutput = outContent.toString().replace("\r\n", "\n");
+        String expectedOutput = "Staff ID: NV102\n"
+                + "Please enter full name: "
+                + "Please enter position: "
+                + "Please enter hourly wage: "
+                + "Invalid wage format! Please enter a valid positive number\n"
+                + "Please enter hourly wage: "
+                + "Add staff successfully!\n";
+        assertEquals(expectedOutput, rawOutput);
+        assertEquals(3, instance.staffList.size());
+    }
+
+    @Test
     public void testRemoveStaffByStaffIDNotFound() {
-        System.out.println("Abnormal Test: Remove staff not found");
+        System.out.println("Abnormal Test 3: Remove staff not found");
         simulateInput("nv999\n");
         PrintStream originalOut = System.out;
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
