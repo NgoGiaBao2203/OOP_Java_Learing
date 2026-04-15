@@ -33,10 +33,10 @@ public class StaffManagement {
         checkInRecords = new HashMap<>();
         scanner = new Scanner(System.in);
     }
-    
+
     public void calculateMonthlySalary() {
         if (!staffList.isEmpty()) {
-            LinkedHashMap<Staff, Double> calculatedData = new LinkedHashMap<>();          
+            LinkedHashMap<Staff, Double> calculatedData = new LinkedHashMap<>();
             for (Staff staff : staffList) {
                 if (staff.getHourlyWage() != null && staff.getHourlyWage().matches("\\d+(\\.\\d+)?")) {
                     double totalSalary = calculateSalaryForOneStaff(staff);
@@ -45,7 +45,7 @@ public class StaffManagement {
                     calculatedData.put(staff, -1.0);
                 }
             }
-            displaySalaryTable(calculatedData);       
+            displaySalaryTable(calculatedData);
         } else {
             System.out.println("List staff is empty");
         }
@@ -75,12 +75,13 @@ public class StaffManagement {
                 LocalDateTime inTime = checkInRecords.get(staff.getStaffID());
                 LocalDateTime outTime = LocalDateTime.now();
                 Duration duration = Duration.between(inTime, outTime);
-                double hoursWorked = duration.toMinutes() / 60.0;
+                double secondsWorked = duration.toSeconds();
+                double hoursWorked = secondsWorked / 3600.0;       
                 double newTotal = staff.getTotalWorkingHours() + hoursWorked;
                 staff.setTotalWorkingHours(newTotal);
                 checkInRecords.remove(staff.getStaffID());
-                System.out.printf("%s checked out! Session hours: %.4f. Total hours: %.4f\n",
-                        staff.getFullName(), hoursWorked, newTotal);
+                System.out.printf("%s checked out! Session: %.0f seconds (%.6f hours). Total: %.4f hours\n",
+                        staff.getFullName(), secondsWorked, hoursWorked, newTotal);
             } else {
                 System.out.println("This staff hasn't checked in yet!");
             }
@@ -265,42 +266,43 @@ public class StaffManagement {
         }
     }
 
-    public void loadStaffFile() throws IOException, InterruptedException {
+    public void loadStaffFile() throws IOException {
         File f = new File(this.STAFF_FILE);
         if (!f.exists()) {
-            f.createNewFile();
-            System.out.print("The data file " + this.STAFF_FILE + " does not exist. Creating new file...");
-            Thread.sleep(1500);
-            System.out.println(" Done!");
-        } else {
-            System.out.print("Loading data from " + this.STAFF_FILE + "... ");
-            try (BufferedReader br = new BufferedReader(new FileReader(this.STAFF_FILE))) {
-                String firstLine = br.readLine();
-                if (firstLine == null || firstLine.trim().isEmpty()) {
-                    System.out.println("File is empty.");
-                    return;
-                }
-                int numberOfStaff = Integer.parseInt(firstLine);
-                for (int i = 0; i < numberOfStaff; i++) {
-                    String staffID = br.readLine();
-                    String fullName = br.readLine();
-                    String position = br.readLine();
-                    String hourlyWage = br.readLine();
-                    String hoursStr = br.readLine();
-                    double hours = (hoursStr != null && !hoursStr.isEmpty()) ? Double.parseDouble(hoursStr) : 0.0;
-                    this.staffList.add(new Staff(staffID, fullName, position, hourlyWage, hours));
-                }
-                Thread.sleep(1500);
-                System.out.println("Done! Loaded " + numberOfStaff + " staff");
-            } catch (Exception e) {
-                System.out.println("\nError while loading file: " + e.getMessage());
+            return;
+        }
+        try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+            String line = br.readLine();
+            if (line == null || line.trim().isEmpty()) {
+                return;
             }
+            int numberOfStaff = Integer.parseInt(line.trim());
+            for (int i = 0; i < numberOfStaff; i++) {
+                String staffID = br.readLine();
+                String fullName = br.readLine();
+                String position = br.readLine();
+                String hourlyWage = br.readLine();
+                String hoursStr = br.readLine();
+                double hours = (hoursStr != null) ? Double.parseDouble(hoursStr) : 0.0;
+                this.staffList.add(new Staff(staffID, fullName, position, hourlyWage, hours));
+            }
+            line = br.readLine();
+            if (line != null && !line.trim().isEmpty()) {
+                int numberOfCheckIns = Integer.parseInt(line.trim());
+                for (int i = 0; i < numberOfCheckIns; i++) {
+                    String staffID = br.readLine();
+                    String timeStr = br.readLine();
+                    if (staffID != null && timeStr != null) {
+                        this.checkInRecords.put(staffID, LocalDateTime.parse(timeStr));
+                    }
+                }
+            }
+            System.out.println("Data loaded successfully!");
         }
     }
 
-    public void saveStaffFile() throws IOException, InterruptedException {
+    public void saveStaffFile() throws IOException {
         try (FileWriter fw = new FileWriter(this.STAFF_FILE)) {
-            System.out.print("Saving data to " + this.STAFF_FILE + "... ");
             fw.write(this.staffList.size() + "\n");
             for (Staff staff : this.staffList) {
                 fw.write(staff.getStaffID() + "\n");
@@ -309,11 +311,12 @@ public class StaffManagement {
                 fw.write(staff.getHourlyWage() + "\n");
                 fw.write(staff.getTotalWorkingHours() + "\n");
             }
-            Thread.sleep(1500);
-            System.out.println("Done! [" + this.staffList.size() + " account saved]");
-
-        } catch (Exception e) {
-            System.out.println("\nError while saving file: " + e.getMessage());
+            fw.write(this.checkInRecords.size() + "\n");
+            for (Map.Entry<String, LocalDateTime> entry : this.checkInRecords.entrySet()) {
+                fw.write(entry.getKey() + "\n");
+                fw.write(entry.getValue().toString() + "\n"); // Lưu giờ dưới dạng String ISO-8601
+            }
+            System.out.println("Data saved successfully to " + STAFF_FILE);
         }
     }
 
