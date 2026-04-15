@@ -12,14 +12,14 @@ import java.util.regex.Pattern;
  *
  * @author giaba
  */
-public class SubmenuForEdit {
+public class SubMenuForEdit {
 
     Scanner scanner;
     StaffManagement staffManagement;
     private final String NUMBER_REGEX = "^\\d+$";
     Pattern NUMER_PATTERN;
 
-    public SubmenuForEdit(StaffManagement sharedStaffManagement) {
+    public SubMenuForEdit(StaffManagement sharedStaffManagement) {
         staffManagement = sharedStaffManagement;
         scanner = new Scanner(System.in);
         NUMER_PATTERN = Pattern.compile(NUMBER_REGEX);

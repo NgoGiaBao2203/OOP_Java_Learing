@@ -6,6 +6,13 @@ package staffmanagementapplication;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  *
@@ -14,6 +21,7 @@ import java.util.Scanner;
 public class StaffManagement {
 
     public ArrayList<Staff> staffList;
+    private final String STAFF_FILE = "staff_data.txt";
     Scanner scanner;
 
     public StaffManagement() {
@@ -164,6 +172,74 @@ public class StaffManagement {
             System.out.println("+---------+----------------------+----------------------+---------------+");
         } else {
             System.out.println("List of student is emplty!");
+        }
+    }
+    
+public void loadStaffFile() throws IOException, InterruptedException {
+        File f = new File(this.STAFF_FILE);
+        
+        if (!f.exists()) { 
+            // Nếu file chưa tồn tại thì tạo mới
+            f.createNewFile(); 
+            System.out.print("The data file " + this.STAFF_FILE + " does not exist. Creating new file...");
+            Thread.sleep(1500); 
+            System.out.println(" Done!"); 
+        } else {
+            System.out.print("Loading data from " + this.STAFF_FILE + "... ");
+            
+            // Đọc file
+            try (BufferedReader br = new BufferedReader(new FileReader(this.STAFF_FILE))) {
+                String firstLine = br.readLine();
+                
+                // Kiểm tra xem file có bị trống không
+                if (firstLine == null || firstLine.trim().isEmpty()) {
+                    System.out.println("File is empty.");
+                    return;
+                }
+                
+                // Dòng đầu tiên trong file sẽ lưu tổng số lượng nhân viên
+                int numberOfStaff = Integer.parseInt(firstLine); 
+                
+                // Chạy vòng lặp để đọc từng thuộc tính của từng nhân viên
+                for (int i = 0; i < numberOfStaff; i++) {
+                    String staffID = br.readLine();
+                    String fullName = br.readLine();
+                    String position = br.readLine();
+                    String hourlyWage = br.readLine();
+                    
+                    // Thêm nhân viên đọc được vào danh sách
+                    this.staffList.add(new Staff(staffID, fullName, position, hourlyWage));
+                }
+                Thread.sleep(1500); 
+                System.out.println("Done! Loaded " + numberOfStaff + " staff(s).");
+                
+            } catch (Exception e) {
+                System.out.println("\nError while loading file: " + e.getMessage());
+            }
+        }
+    }
+
+    public void saveStaffFile() throws IOException, InterruptedException {
+        // Sử dụng try-with-resources để tự động đóng file sau khi lưu xong
+        try (FileWriter fw = new FileWriter(this.STAFF_FILE)) {
+            System.out.print("Saving data to " + this.STAFF_FILE + "... ");
+            
+            // Dòng đầu tiên: Ghi tổng số lượng nhân viên
+            fw.write(this.staffList.size() + "\n");
+            
+            // Vòng lặp: Ghi lần lượt từng thông tin của nhân viên xuống dòng mới
+            for (Staff staff : this.staffList) {
+                fw.write(staff.getStaffID() + "\n");
+                fw.write(staff.getFullName() + "\n");
+                fw.write(staff.getPosition() + "\n");
+                fw.write(staff.getHourlyWage() + "\n");
+            }
+            
+            Thread.sleep(1500);
+            System.out.println("Done! [" + this.staffList.size() + " account(s) saved]");
+            
+        } catch (Exception e) {
+            System.out.println("\nError while saving file: " + e.getMessage());
         }
     }
 

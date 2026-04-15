@@ -16,18 +16,23 @@ public class MenuManagement {
 
     Scanner scanner;
     StaffManagement staffManagement;
-    SubmenuForRemove submenuForRemove;
-    SubmenuForEdit submenuForEdit;
+    SubMenuForRemove submenuForRemove;
+    SubMenuForEdit submenuForEdit;
 
     private final String NUMBER_REGEX = "^\\d+$";
     Pattern NUMER_PATTERN;
 
     public MenuManagement() {
         staffManagement = new StaffManagement();
-        submenuForRemove = new SubmenuForRemove(staffManagement);
-        submenuForEdit = new SubmenuForEdit(staffManagement);
+        submenuForRemove = new SubMenuForRemove(staffManagement);
+        submenuForEdit = new SubMenuForEdit(staffManagement);
         scanner = new Scanner(System.in);
         NUMER_PATTERN = Pattern.compile(NUMBER_REGEX);
+        try {
+            staffManagement.loadStaffFile();
+        } catch (Exception e) {
+            System.out.println("System failed to load data: " + e.getMessage());
+        }
     }
 
     public void menuLogic() {
@@ -72,8 +77,13 @@ public class MenuManagement {
 
                         flag = true;
                         break;
-                    case 8:
+                    case 8:                      
                         System.out.println("Exit application");
+                        try {
+                            staffManagement.saveStaffFile();
+                        } catch (Exception e) {
+                            System.out.println("System failed to save data: " + e.getMessage());
+                        }
                         flag = false;
                         break;
                     default:
