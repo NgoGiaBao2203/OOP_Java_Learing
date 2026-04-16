@@ -59,7 +59,7 @@ public class StaffManagementTest {
     //--------------------------------- Normal case ------------------------------------//
     @Test
     public void testSaveAndLoadStaffFile() throws IOException {
-        System.out.println("Test 12: Save and Load Staff File completely");
+        System.out.println("Test 12: Save and Load staff file completely");
         PrintStream originalOut = System.out;
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
@@ -266,7 +266,7 @@ public class StaffManagementTest {
     }
 
     @Test
-    public void testCheckIn_Success() {
+    public void testCheckInSuccess() {
         System.out.println("Test 8: Check-in successfully");
         simulateInput("nv100\n");
         PrintStream originalOut = System.out;
