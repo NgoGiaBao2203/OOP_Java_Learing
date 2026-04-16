@@ -6,6 +6,8 @@ package StaffManagementTest;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
@@ -55,6 +57,36 @@ public class StaffManagementTest {
     }
 
     //--------------------------------- Normal case ------------------------------------//
+    @Test
+    public void testSaveAndLoadStaffFile() throws IOException {
+        System.out.println("Test 12: Save and Load Staff File completely");
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        instance.saveStaffFile();
+        String saveOutput = outContent.toString().trim();
+        assertEquals("Data saved successfully", saveOutput);
+        instance.staffList.clear();
+        assertEquals(0, instance.staffList.size());
+        outContent.reset();
+        instance.loadStaffFile();
+        System.setOut(originalOut);
+        String loadOutput = outContent.toString().trim();
+        assertEquals("Data loaded successfully", loadOutput);
+        assertEquals(2, instance.staffList.size());
+        Staff staff1 = instance.staffList.get(0);
+        assertEquals("NV100", staff1.getStaffID());
+        assertEquals("Vo Minh Duy", staff1.getFullName());
+        assertEquals("Thu Ngan", staff1.getPosition());
+        assertEquals("30", staff1.getHourlyWage());
+        assertEquals(0.0, staff1.getTotalWorkingHours(), 0.0001);
+        Staff staff2 = instance.staffList.get(1);
+        assertEquals("NV101", staff2.getStaffID());
+        assertEquals("Tran Quoc Ba", staff2.getFullName());
+        assertEquals("BA", staff2.getPosition());
+        assertEquals("40", staff2.getHourlyWage());
+    }
+
     @Test
     public void testDisplayTable() {
         System.out.println("Test 1: display table");
@@ -379,7 +411,6 @@ public class StaffManagementTest {
         String expectedMessage = "Please enter staff ID to edit: Not found staff nv999";
         assertEquals(expectedMessage, outContent.toString().trim());
     }
-    
 
     @Test
     public void testRemoveStaffByStaffIDNotFound() {
@@ -396,7 +427,7 @@ public class StaffManagementTest {
         assertEquals("Not found staff ID", actualResult);
         assertEquals(2, instance.staffList.size());
     }
-    
+
     @Test
     public void testSearchStaffByStaffIDNotFound() {
         System.out.println("Test 7: Search staff not found");
@@ -409,7 +440,7 @@ public class StaffManagementTest {
         String expectedMessage = "Please enter staff ID: Not found nv999";
         assertEquals(expectedMessage, outContent.toString().trim());
     }
-    
+
     @Test
     public void testRemoveStaffByStaffIDEmptyList() {
         System.out.println("Test 8: Remove staff by ID with empty list");
@@ -432,7 +463,7 @@ public class StaffManagementTest {
         PrintStream originalOut = System.out;
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
-        instance.removeMultipleStaffByStaffID();     
+        instance.removeMultipleStaffByStaffID();
         System.setOut(originalOut);
         assertEquals("List staff is empty", outContent.toString().trim());
         assertEquals(0, instance.staffList.size());
@@ -451,8 +482,8 @@ public class StaffManagementTest {
         String expectedResult = "List staff empty";
         assertEquals(expectedResult, actualResult);
         assertEquals(0, instance.staffList.size());
-    } 
-    
+    }
+
     @Test
     public void testCalculateMonthlySalaryEmptyList() {
         System.out.println("Test 9: Calculate Monthly Salary with empty list");
@@ -478,12 +509,12 @@ public class StaffManagementTest {
         String expectedMessage = "Enter Staff ID to Check-in: Not found staff nv999";
         assertEquals(expectedMessage, rawOutput);
     }
-    
+
     @Test
     public void testCheckInEmptyList() {
-        System.out.println("Test 10.1: Check-in with empty list");    
-        instance.staffList.clear(); 
-        simulateInput("nv100\n"); 
+        System.out.println("Test 10.1: Check-in with empty list");
+        instance.staffList.clear();
+        simulateInput("nv100\n");
         PrintStream originalOut = System.out;
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
@@ -521,12 +552,12 @@ public class StaffManagementTest {
         String expectedMessage = "Enter Staff ID to Check-out: Not found staff nv999";
         assertEquals(expectedMessage, rawOutput);
     }
-    
+
     @Test
     public void testCheckOut_EmptyList() {
         System.out.println("Test 11.2: Check-out with empty list");
-        instance.staffList.clear(); 
-        simulateInput("nv100\n"); 
+        instance.staffList.clear();
+        simulateInput("nv100\n");
         PrintStream originalOut = System.out;
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
@@ -535,5 +566,22 @@ public class StaffManagementTest {
         String rawOutput = outContent.toString().trim();
         String expectedMessage = "Enter Staff ID to Check-out: Not found staff nv100";
         assertEquals(expectedMessage, rawOutput);
+    }
+
+    @Test
+    public void testLoadStaffFileFileNotFound() throws IOException {
+        System.out.println("Test 12: Load file when staff_data.txt doesn't exist");
+        File file = new File("staff_data.txt");
+        if (file.exists()) {
+            file.delete();
+        }
+        instance.staffList.clear();
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        instance.loadStaffFile();
+        System.setOut(originalOut);
+        assertEquals("", outContent.toString().trim());
+        assertEquals(0, instance.staffList.size());
     }
 }
