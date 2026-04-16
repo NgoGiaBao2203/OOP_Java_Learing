@@ -70,7 +70,7 @@ public class MenuManagement {
                         flag = true;
                         break;
                     case 6:
-
+                        staffManagement.sortName();
                         flag = true;
                         break;
                     case 7:
@@ -85,7 +85,7 @@ public class MenuManagement {
                         staffManagement.checkOut();
                         flag = true;
                         break;
-                    case 10:                     
+                    case 10:
                         System.out.println("Exit application");
                         try {
                             staffManagement.saveStaffFile();

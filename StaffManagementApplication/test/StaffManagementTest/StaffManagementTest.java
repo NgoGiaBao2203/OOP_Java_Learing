@@ -57,23 +57,16 @@ public class StaffManagementTest {
     }
 
     //--------------------------------- Normal case ------------------------------------//
-    @Test
-    public void testSaveAndLoadStaffFile() throws IOException {
-        System.out.println("Test 12: Save and Load staff file completely");
+@Test
+    public void testSaveStaffFile() throws IOException {
+        System.out.println("Test: Save staff file completely");
         PrintStream originalOut = System.out;
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
         instance.saveStaffFile();
         String saveOutput = outContent.toString().trim();
-        assertEquals("Data saved successfully", saveOutput);
-        instance.staffList.clear();
-        assertEquals(0, instance.staffList.size());
-        outContent.reset();
-        instance.loadStaffFile();
         System.setOut(originalOut);
-        String loadOutput = outContent.toString().trim();
-        assertEquals("Data loaded successfully", loadOutput);
-        assertEquals(2, instance.staffList.size());
+        assertEquals("Data saved successfully", saveOutput);
         Staff staff1 = instance.staffList.get(0);
         assertEquals("NV100", staff1.getStaffID());
         assertEquals("Vo Minh Duy", staff1.getFullName());
@@ -87,6 +80,31 @@ public class StaffManagementTest {
         assertEquals("40", staff2.getHourlyWage());
     }
 
+    @Test
+    public void testLoadStaffFile() throws IOException {
+        System.out.println("Test: Load staff file completely");
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        instance.saveStaffFile();
+        instance.staffList.clear();
+        assertEquals(0, instance.staffList.size());
+        instance.loadStaffFile();
+        assertEquals(2, instance.staffList.size());
+        Staff staff1 = instance.staffList.get(0);
+        assertEquals("NV100", staff1.getStaffID());
+        assertEquals("Vo Minh Duy", staff1.getFullName());
+        assertEquals("Thu Ngan", staff1.getPosition());
+        assertEquals("30", staff1.getHourlyWage());
+        Staff staff2 = instance.staffList.get(1);
+        assertEquals("NV101", staff2.getStaffID());
+        assertEquals("Tran Quoc Ba", staff2.getFullName());
+        assertEquals("BA", staff2.getPosition());
+        assertEquals("40", staff2.getHourlyWage());
+        System.setOut(originalOut);
+    }
+
+    
     @Test
     public void testDisplayTable() {
         System.out.println("Test 1: display table");
@@ -266,7 +284,7 @@ public class StaffManagementTest {
     }
 
     @Test
-    public void testCheckInSuccess() {
+    public void testCheckIn() {
         System.out.println("Test 8: Check-in successfully");
         simulateInput("nv100\n");
         PrintStream originalOut = System.out;
@@ -299,6 +317,21 @@ public class StaffManagementTest {
         String actualMessage = rawOutput.replaceAll("\\d+(\\.\\d+)?", "[NUM]");
         String expectedMessage = "Enter Staff ID to Check-out: Vo Minh Duy checked out! Session: [NUM] seconds ([NUM] hours). Total: [NUM] hours";
         assertEquals(expectedMessage, actualMessage);
+    }
+
+    @Test
+    public void testSortName() {
+        System.out.println("Test 10: sortName");
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        instance.sortName();
+        System.setOut(originalOut);
+        String output = outContent.toString().trim();
+        assertEquals("Tran Quoc Ba", instance.staffSortedList.get(0).getFullName());
+        assertEquals("Vo Minh Duy", instance.staffSortedList.get(1).getFullName());
+        assertEquals("Vo Minh Duy", instance.staffList.get(0).getFullName());
+        assertEquals("Tran Quoc Ba", instance.staffList.get(1).getFullName());
     }
 
     //--------------------------------- abnormal case ------------------------------------//
@@ -350,7 +383,7 @@ public class StaffManagementTest {
     }
 
     @Test
-    public void testEditFullName_NotFound() {
+    public void testEditFullNameNotFound() {
         System.out.println("Test 3.1: Edit full name with invalid ID");
         simulateInput("nv999\n");
         PrintStream originalOut = System.out;
@@ -388,7 +421,7 @@ public class StaffManagementTest {
     }
 
     @Test
-    public void testEditHourlyWage_EmptyList() {
+    public void testEditHourlyWageEmptyList() {
         System.out.println("Test 5: Edit hourly wage with empty list");
         instance.staffList.clear();
         PrintStream originalOut = System.out;
@@ -582,6 +615,20 @@ public class StaffManagementTest {
         instance.loadStaffFile();
         System.setOut(originalOut);
         assertEquals("", outContent.toString().trim());
+        assertEquals(0, instance.staffList.size());
+    }
+
+    @Test
+    public void testSortNameEmptyList() {
+        System.out.println("Test 13: Sort with empty list");
+        instance.staffList.clear();
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+        instance.sortName();
+        System.setOut(originalOut);
+        String actualResult = outContent.toString().trim();
+        assertEquals("The staff list is empty. It cannot be sort", actualResult);
         assertEquals(0, instance.staffList.size());
     }
 }
