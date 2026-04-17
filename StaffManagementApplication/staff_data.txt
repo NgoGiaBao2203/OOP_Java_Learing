@@ -1,29 +1,12 @@
-5
+2
 NV100
-ngo gia bao
-dev
-25
-0.0077777777777777776
-NV101
-truan van kiet
-ba
+Vo Minh Duy
+Thu Ngan
 30
 0.0
-NV102
-phu trong
-solution
-30
-0.06583333333333333
-NV103
-nguyen thi minh thu
-tester
-25
-0.5216666666666666
-NV104
-nguyen duy tan
-thu ky
-25
-0.0
-1
 NV101
-2026-04-15T14:35:12.379510800
+Tran Quoc Ba
+BA
+40
+0.0
+0
