@@ -233,7 +233,7 @@ public class StaffManagementTest {
         assertEquals(expectedSalary, actualSalary, 0.0001);
     }
 
-@Test
+    @Test
     public void testCalculateMonthlySalarySuccess() {
         originalOut.println("Test 7: Calculate Monthly Salary Normal");
         instance.staffList.get(0).setTotalWorkingHours(10.0);
@@ -246,7 +246,6 @@ public class StaffManagementTest {
                 + String.format("|%-9s|%-22s|%-15s|%-15.2f|%-16.2f|\n", "NV100", "Vo Minh Duy", "30", 10.00, 300.00)
                 + String.format("|%-9s|%-22s|%-15s|%-15.2f|%-16.2f|\n", "NV101", "Tran Quoc Ba", "40", 5.50, 220.00)
                 + "+---------+----------------------+---------------+---------------+----------------+";
-        
         String expected = expectedOutput.replace("\r\n", "\n").trim();
         String actual = rawOutput.replace("\r\n", "\n").trim();
         assertEquals(expected, actual);
