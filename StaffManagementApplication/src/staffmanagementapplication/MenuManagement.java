@@ -22,6 +22,10 @@ public class MenuManagement {
     private final String NUMBER_REGEX = "^\\d+$";
     Pattern NUMER_PATTERN;
 
+    /**
+     * Setup menu management, load data from file and initialize submenu for
+     * remove and edit.
+     */
     public MenuManagement() {
         staffManagement = new StaffManagement();
         submenuForRemove = new SubMenuForRemove(staffManagement);
@@ -35,6 +39,9 @@ public class MenuManagement {
         }
     }
 
+    /**
+     * Run the menu loop and do what the user chooses.
+     */
     public void menuLogic() {
         Boolean flag;
         Integer selectedOption;
@@ -102,6 +109,12 @@ public class MenuManagement {
         } while (flag);
     }
 
+    /**
+     * Run the menu loop and do what the user chooses.
+     *
+     * @param choice choice The text the user typed in the console.
+     * @return True if the number is good, False if not.
+     */
     private Boolean validateChoice(String choice) {
         Matcher numberMatcher = NUMER_PATTERN.matcher(choice);
         if (!numberMatcher.matches()) {
@@ -118,6 +131,11 @@ public class MenuManagement {
         }
     }
 
+    /**
+     * Ask the user to type a choice. r
+     *
+     * @return The text typed by the user
+     */
     private String inputChoice() {
         String choice;
         System.out.print("Please enter  your option: ");
@@ -125,6 +143,9 @@ public class MenuManagement {
         return choice;
     }
 
+    /**
+     * Show the list of menu options on the screen.
+     */
     private void menuOptions() {
         System.out.println("========================================");
         System.out.println("|       STAFF MANAGEMENT OPTIONS       |");
