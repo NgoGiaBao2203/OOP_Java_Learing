@@ -39,7 +39,7 @@ public class StaffManagement {
     }
 
     /**
-     * Sorts the staff list 
+     * Put staff names in order from A to Z
      */
     public void sortName() {
         if (staffList == null || staffList.isEmpty()) {
@@ -72,8 +72,7 @@ public class StaffManagement {
     }
     
     /**
-     * Calculates the salary for one staff member based on their hourly wage and total working hours
-     * @param staff
+     * Calculate money for one staff person
      * @return 
      */
     public double calculateSalaryForOneStaff(Staff staff) {
@@ -82,7 +81,7 @@ public class StaffManagement {
     }
     
     /**
-     * Check in and check out staff members, recording the time of check-in
+     * Save the time when staff starts work
      */
     public void checkIn() {
         String staffID = inputString("Enter Staff ID to Check-in: ");
@@ -96,7 +95,8 @@ public class StaffManagement {
     }
     
     /**
-     * Check out staff members, calculating the duration of their work session and updating their total working hours
+     * Save the time when staff stops work and find work hours for this session,
+     * then add to total working hours of staff
      */
     public void checkOut() {
         String staffID = inputString("Enter Staff ID to Check-out: ");
@@ -122,8 +122,7 @@ public class StaffManagement {
     }
     
     /**
-     * Edits the hourly wage of a staff member, allowing the user to input a new wage and
-     * updating the staff member's information accordingly
+     * Edit the hourly pay for a staff person.
      */
     public void editHourlyWage() {
         if (!staffList.isEmpty()) {
@@ -143,8 +142,7 @@ public class StaffManagement {
     }
 
     /**
-     * Edits the position of a staff member, allowing the user to input a new position and
-     * updating the staff member's information accordingly
+     * Edit the position for a staff person.
      */
     public void editPosition() {
         if (!staffList.isEmpty()) {
@@ -164,8 +162,7 @@ public class StaffManagement {
     }
     
     /**
-     * Edit the full name of a staff member, allowing the user to input a new name and
-     * updating the staff member's information accordingly
+     * Edit the full name for a staff person.
      */
     public void editFullName() {
         if (!staffList.isEmpty()) {
@@ -185,8 +182,7 @@ public class StaffManagement {
     }
     
     /**
-     * Removes all staff members from the staff list, effectively clearing the list and
-     * allowing for a fresh start
+     * Delete every staff person from the list
      */
     public void removeAllStaff() {
         if (!staffList.isEmpty()) {
@@ -198,8 +194,7 @@ public class StaffManagement {
     }
 
     /**
-     * Removes multiple staff members from the staff list based on their staff IDs,
-     * allowing the user to input multiple IDs and
+     * Delete many staff people using their IDs
      */
     public void removeMultipleStaffByStaffID() {
         if (!staffList.isEmpty()) {
@@ -213,9 +208,7 @@ public class StaffManagement {
     }
 
     /**
-     * Removes a staff member from the staff list based on their staff ID,
-     * allowing the user to input an ID and
-     * removing the corresponding staff member from the list
+     * Delete a staff person using their ID
      */
     public void removeStaffByStaffID() {
         if (!staffList.isEmpty()) {
@@ -233,9 +226,7 @@ public class StaffManagement {
     }
 
     /**
-     * Reads a staff member's information from the staff list based on their staff ID, allowing the user to input an ID and
-     * displaying the corresponding staff member's information if found, or a not found message if the 
-     * ID does not match any staff member in the list
+     * Search for staff members by their IDs, allowing the user to input a search keyword ID
      */
     public void SearchStaffByStaffID() {
         String keyword = inputString("Please enter staff ID: ");
@@ -248,8 +239,7 @@ public class StaffManagement {
     }
 
     /**
-     * Adds a new staff member to the staff list, 
-     * allowing the user to input the staff member's information 
+     * Add a new staff person to the list
      */
     public void addStaff() {
         Staff staff = new Staff("", "", "", "", 0.0);
@@ -263,8 +253,7 @@ public class StaffManagement {
 
     /**
      * Displays a salary table that shows the staff members IDs, full names, hourly wages, 
-     * total working hours, and total salaries,
-     * allowing the user to see a summary of the staff members salary information in a tabular format
+     * total working hours, and total salaries
      * @param salaryData 
      */
     public void displaySalaryTable(LinkedHashMap<Staff, Double> salaryData) {
@@ -297,8 +286,7 @@ public class StaffManagement {
 
     /**
      * Displays a table of staff members information, including their IDs, full names, positions, 
-     * hourly wages, and total working hours,
-     * allowing the user to see a summary of the staff members information in a tabular format
+     * hourly wages, and total working hours
      * @param staffList 
      */
     public void displayTable(ArrayList<Staff> staffList) {
@@ -324,7 +312,7 @@ public class StaffManagement {
 
     /**
      * Displays a table of all staff members information, including their IDs, full names, positions,
-     * hourly wages, and total working hours,
+     * hourly wages, and total working hours
      */
     public void displayTable() {
         if (!staffList.isEmpty()) {
@@ -348,10 +336,8 @@ public class StaffManagement {
     }
 
     /**
-     * Loads staff data from a file, reading the staff members information and check-in records,
-     * allowing the application to persist staff data across sessions and 
-     * restore the staff list and check-in records when the application is restarted
-     * @throws IOException 
+     * Get staff data from the file
+     * @throws IOException IOException If file error happens
      */
     public void loadStaffFile() throws IOException {
         File f = new File(this.STAFF_FILE);
@@ -389,9 +375,7 @@ public class StaffManagement {
     }
 
     /**
-     * Saves staff data to a file, writing the staff members information and check-in records,
-     * allowing the application to persist staff data across sessions and 
-     * ensure that the staff list and check-in records are saved when the application is closed,
+     * Saves staff data to a flie
      * @throws IOException 
      */
     public void saveStaffFile() throws IOException {
@@ -414,8 +398,7 @@ public class StaffManagement {
     }
 
     /**
-     * Checks if a staff ID is duplicated in the staff list, 
-     * allowing the application to ensure that each staff member has a unique ID and
+     * Check if this ID is already in the list
      * @param staffID
      * @return 
      */
@@ -429,8 +412,7 @@ public class StaffManagement {
     }
 
     /**
-     * sorts the staff list by last name, allowing the application to 
-     * display the staff members in a sorted order based on their first names
+     * Sort the staff list by name
      * @return 
      */
     private ArrayList<Staff> sortStaffList() {
@@ -444,8 +426,7 @@ public class StaffManagement {
     }
 
     /**
-     * finds staff members in the staff list based on a search keyword, allowing the application to
-     * search for staff members by their IDs and return a list of matching staff members
+     * Find many staff people by typing part of an ID
      * @param StaffID
      * @return 
      */
@@ -474,7 +455,7 @@ public class StaffManagement {
     }
 
     /**
-     * 
+     * Delete many staff IDs from the list
      * @param idsToRemove 
      */
     private void removeMultipleIDs(String[] idsToRemove) {
@@ -492,6 +473,11 @@ public class StaffManagement {
         }
     }
 
+    /**
+     * Get the last part of a name, which is used for sorting the staff list by name
+     * @param fullName
+     * @return 
+     */
     private String getLastName(String fullName) {
         if (fullName == null || fullName.trim().isEmpty()) {
             return "";
@@ -500,6 +486,10 @@ public class StaffManagement {
         return parts[parts.length - 1];
     }
 
+    /**
+     * Create a new ID for staff (like NV100, NV101)
+     * @return 
+     */
     private String generateStaffID() {
         int currentNumber = 100;
         String staffID = "NV" + currentNumber;
@@ -514,6 +504,11 @@ public class StaffManagement {
         return staffID;
     }
 
+    /**
+     * Ask the user to type the pay amount 
+     * @param title
+     * @return 
+     */
     private String inputStringWage(String title) {
         String input;
         String result = "";
@@ -531,6 +526,11 @@ public class StaffManagement {
         return result;
     }
 
+    /**
+     * Ask the user to type something and return it as a string
+     * @param title
+     * @return 
+     */
     private String inputString(String title) {
         String input;
         System.out.print(title);
