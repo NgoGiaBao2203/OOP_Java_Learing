@@ -58,7 +58,7 @@ public class StaffManagement {
         if (!staffList.isEmpty()) {
             LinkedHashMap<Staff, Double> calculatedData = new LinkedHashMap<>();
             for (Staff staff : staffList) {
-                if (staff.getHourlyWage() != null && staff.getHourlyWage().matches("\\d+(\\.\\d+)?")) {
+                if (staff.getHourlyWage() != null && WAGE_PATTERN.matcher(staff.getHourlyWage()).matches()) {
                     double totalSalary = calculateSalaryForOneStaff(staff);
                     calculatedData.put(staff, totalSalary);
                 } else {
