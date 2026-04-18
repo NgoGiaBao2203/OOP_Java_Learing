@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * This class shows a menu to remove staff.
  *
  * @author giaba
  */
@@ -19,12 +20,20 @@ public class SubMenuForRemove {
     private final String NUMBER_REGEX = "^\\d+$";
     Pattern NUMER_PATTERN;
 
+    /**
+     * Creates a new menu for removing staff.
+     * * @param sharedStaffManagement The main staff management system.
+     */
     public SubMenuForRemove(StaffManagement sharedStaffManagement) {
         staffManagement = sharedStaffManagement;
         scanner = new Scanner(System.in);
         NUMER_PATTERN = Pattern.compile(NUMBER_REGEX);
     }
 
+    /**
+     * Shows the menu and runs the user's choice. 
+     * It loops until the user chooses to go back (option 4).
+     */
     public void SubmenuForRemoveOptions() {
         Boolean flag;
         Integer selectedOption;
@@ -52,7 +61,7 @@ public class SubMenuForRemove {
                         flag = true;
                         break;
                     case 4:
-                        flag = false;
+                        flag = false; // Stop the loop and go back
                         break;
                     default:
                         flag = true;
@@ -62,6 +71,11 @@ public class SubMenuForRemove {
         } while (flag);
     }
 
+    /**
+     * Checks if the user typed a correct number (1, 2, 3, or 4).
+     * * @param choice The text the user typed.
+     * @return true if the choice is good, false if it is bad.
+     */
     private Boolean validateChoice(String choice) {
         Matcher numberMatcher = NUMER_PATTERN.matcher(choice);
         if (!numberMatcher.matches()) {
@@ -78,6 +92,10 @@ public class SubMenuForRemove {
         }
     }
 
+    /**
+     * Asks the user to type their choice.
+     * * @return The text the user typed.
+     */
     private String inputChoice() {
         String choice;
         System.out.print("Please enter  your option remove: ");
@@ -85,9 +103,12 @@ public class SubMenuForRemove {
         return choice;
     }
 
+    /**
+     * Prints the menu choices on the screen.
+     */
     private void SubmenuOptions() {
         System.out.println("======================================");
-        System.out.println("|           REMOVE OPTIONS           |");
+        System.out.println("|          REMOVE OPTIONS            |");
         System.out.println("======================================");
         System.out.println("| 1. Remove staff by ID              |");
         System.out.println("| 2. Remove multiple staff by ID     |");
