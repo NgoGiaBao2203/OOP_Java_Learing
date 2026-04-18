@@ -50,7 +50,7 @@ public class StaffManagement {
             displayTable(staffSortedList);
         }
     }
-    
+
     /**
      * Calculates the monthly salary for all staff members.
      */
@@ -70,16 +70,17 @@ public class StaffManagement {
             System.out.println("List staff is empty");
         }
     }
-    
+
     /**
      * Calculate money for one staff person.
-     * @return 
+     *
+     * @return
      */
     public double calculateSalaryForOneStaff(Staff staff) {
         double wage = Double.parseDouble(staff.getHourlyWage());
         return wage * staff.getTotalWorkingHours();
     }
-    
+
     /**
      * Save the time when staff starts work.
      */
@@ -87,13 +88,17 @@ public class StaffManagement {
         String staffID = inputString("Enter Staff ID to Check-in: ");
         Staff staff = findStaffByStaffID(staffID);
         if (staff != null) {
+            if (checkInRecords.containsKey(staff.getStaffID())) {
+                System.out.println("This staff has already checked in!");
+                return;
+            }
             checkInRecords.put(staff.getStaffID(), LocalDateTime.now());
             System.out.println(staff.getFullName() + " checked in successfully at " + LocalDateTime.now());
         } else {
             System.out.println("Not found staff " + staffID);
         }
     }
-    
+
     /**
      * Save the time when staff stops work and find work hours for this session,
      * then add to total working hours of staff.
@@ -120,7 +125,7 @@ public class StaffManagement {
             System.out.println("Not found staff " + staffID);
         }
     }
-    
+
     /**
      * Edit the hourly pay for a staff person.
      */
@@ -160,7 +165,7 @@ public class StaffManagement {
             System.out.println("List staff is empty");
         }
     }
-    
+
     /**
      * Edit the full name for a staff person.
      */
@@ -180,7 +185,7 @@ public class StaffManagement {
             System.out.println("List staff is empty");
         }
     }
-    
+
     /**
      * Delete every staff person from the list.
      */
@@ -226,7 +231,8 @@ public class StaffManagement {
     }
 
     /**
-     * Search for staff members by their IDs, allowing the user to input a search keyword ID.
+     * Search for staff members by their IDs, allowing the user to input a
+     * search keyword ID.
      */
     public void SearchStaffByStaffID() {
         String keyword = inputString("Please enter staff ID: ");
@@ -242,8 +248,12 @@ public class StaffManagement {
      * Add a new staff person to the list.
      */
     public void addStaff() {
+        String newID = generateStaffID();
+        if (newID == null) {
+            return; 
+        }
         Staff staff = new Staff("", "", "", "", 0.0);
-        staff.setStaffID(generateStaffID());
+        staff.setStaffID(newID);
         staff.setFullName(inputString("Please enter full name: "));
         staff.setPosition(inputString("Please enter position: "));
         staff.setHourlyWage(inputStringWage("Please enter hourly wage: "));
@@ -252,9 +262,10 @@ public class StaffManagement {
     }
 
     /**
-     * Displays a salary table that shows the staff members IDs, full names, hourly wages, 
-     * total working hours, and total salaries.
-     * @param salaryData 
+     * Displays a salary table that shows the staff members IDs, full names,
+     * hourly wages, total working hours, and total salaries.
+     *
+     * @param salaryData
      */
     public void displaySalaryTable(LinkedHashMap<Staff, Double> salaryData) {
         System.out.println("+---------+----------------------+---------------+---------------+----------------+");
@@ -285,9 +296,10 @@ public class StaffManagement {
     }
 
     /**
-     * Displays a table of staff members information, including their IDs, full names, positions, 
-     * hourly wages, and total working hours.
-     * @param staffList 
+     * Displays a table of staff members information, including their IDs, full
+     * names, positions, hourly wages, and total working hours.
+     *
+     * @param staffList
      */
     public void displayTable(ArrayList<Staff> staffList) {
         if (!staffList.isEmpty()) {
@@ -311,8 +323,8 @@ public class StaffManagement {
     }
 
     /**
-     * Displays a table of all staff members information, including their IDs, full names, positions,
-     * hourly wages, and total working hours.
+     * Displays a table of all staff members information, including their IDs,
+     * full names, positions, hourly wages, and total working hours.
      */
     public void displayTable() {
         if (!staffList.isEmpty()) {
@@ -337,6 +349,7 @@ public class StaffManagement {
 
     /**
      * Get staff data from the file.
+     *
      * @throws IOException IOException If file error happens.
      */
     public void loadStaffFile() throws IOException {
@@ -344,6 +357,8 @@ public class StaffManagement {
         if (!f.exists()) {
             return;
         }
+        this.staffList.clear();
+        this.checkInRecords.clear();
         try (BufferedReader br = new BufferedReader(new FileReader(f))) {
             String line = br.readLine();
             if (line == null || line.trim().isEmpty()) {
@@ -376,7 +391,8 @@ public class StaffManagement {
 
     /**
      * Saves staff data to file.
-     * @throws IOException 
+     *
+     * @throws IOException
      */
     public void saveStaffFile() throws IOException {
         try (FileWriter fw = new FileWriter(this.STAFF_FILE)) {
@@ -399,8 +415,9 @@ public class StaffManagement {
 
     /**
      * Check if this ID is already in the list.
+     *
      * @param staffID
-     * @return 
+     * @return
      */
     private boolean staffIDDuplicated(String staffID) {
         for (Staff staff : staffList) {
@@ -413,7 +430,8 @@ public class StaffManagement {
 
     /**
      * Sort the staff list by name.
-     * @return 
+     *
+     * @return
      */
     private ArrayList<Staff> sortStaffList() {
         ArrayList<Staff> termList = new ArrayList<>(staffList);
@@ -427,8 +445,9 @@ public class StaffManagement {
 
     /**
      * Find many staff people by typing part of an ID.
+     *
      * @param StaffID
-     * @return 
+     * @return
      */
     private ArrayList<Staff> findStaffForSearch(String StaffID) {
         ArrayList<Staff> StaffListFound = new ArrayList<>();
@@ -442,8 +461,9 @@ public class StaffManagement {
 
     /**
      * Finds a staff member in the list by their ID.
+     *
      * @param staffID
-     * @return 
+     * @return
      */
     private Staff findStaffByStaffID(String staffID) {
         for (Staff staff : staffList) {
@@ -456,7 +476,8 @@ public class StaffManagement {
 
     /**
      * Delete many staff IDs from the list.
-     * @param idsToRemove 
+     *
+     * @param idsToRemove
      */
     private void removeMultipleIDs(String[] idsToRemove) {
         for (int i = 0; i < idsToRemove.length; i++) {
@@ -474,9 +495,11 @@ public class StaffManagement {
     }
 
     /**
-     * Get the last part of a name, which is used for sorting the staff list by name.
+     * Get the last part of a name, which is used for sorting the staff list by
+     * name.
+     *
      * @param fullName
-     * @return 
+     * @return
      */
     private String getLastName(String fullName) {
         if (fullName == null || fullName.trim().isEmpty()) {
@@ -488,7 +511,8 @@ public class StaffManagement {
 
     /**
      * Create a new ID for staff (like NV100, NV101).
-     * @return 
+     *
+     * @return
      */
     private String generateStaffID() {
         int currentNumber = 100;
@@ -497,6 +521,7 @@ public class StaffManagement {
             currentNumber++;
             if (currentNumber > 999) {
                 System.out.println("The system has reached the maximum staff limit(NV999)");
+                return null;
             }
             staffID = "NV" + currentNumber;
         }
@@ -506,8 +531,9 @@ public class StaffManagement {
 
     /**
      * Ask the user to type the pay amount.
+     *
      * @param title
-     * @return 
+     * @return
      */
     private String inputStringWage(String title) {
         String input;
@@ -528,8 +554,9 @@ public class StaffManagement {
 
     /**
      * Ask the user to type something and return it as a string.
+     *
      * @param title
-     * @return 
+     * @return
      */
     private String inputString(String title) {
         String input;
