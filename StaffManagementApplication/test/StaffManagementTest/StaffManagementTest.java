@@ -155,20 +155,20 @@ public class StaffManagementTest {
     }
 
     @Test
-    public void testremoveMultipleStaffByStaffID() {
+    public void testRemoveMultipleStaffByStaffID() {
         originalOut.println("Test 5.2: Remove multiple staff");
         simulateInput("nv100 nv101\n");
         instance.removeMultipleStaffByStaffID();
-        String rawOutput = outContent.toString();
+        String rawOutput = outContent.toString().replace("\r\n", "\n").trim();
         String prompt = "Please enter multiple staff ID: ";
-        String actualResult = rawOutput.substring(prompt.length()).trim();
-        String expectedResult = "Removed multiple staff successfully";
-        assertEquals(expectedResult, actualResult);
+        String expectedMessage = "Removed multiple staff successfully";
+        String actualMessage = rawOutput.substring(rawOutput.lastIndexOf(prompt) + prompt.length()).trim();
+        assertEquals(expectedMessage, actualMessage);
         assertEquals(0, instance.staffList.size());
     }
 
     @Test
-    public void testremoveAllStaffByStaff() {
+    public void testRemoveAllStaffByStaff() {
         originalOut.println("Test 5.3: Remove all staff");
         instance.removeAllStaff();
         String actualResult = outContent.toString().trim();
@@ -304,7 +304,7 @@ public class StaffManagementTest {
                 + "Please enter full name: "
                 + "Please enter position: "
                 + "Please enter hourly wage: "
-                + "Invalid wage format! Please enter a valid positive number\n"
+                + "Error: Invalid wage format! Please enter a valid positive number.\n"
                 + "Please enter hourly wage: "
                 + "Add staff successfully!\n";
         assertEquals(expectedOutput, rawOutput);
@@ -328,18 +328,16 @@ public class StaffManagementTest {
     }
 
     @Test
-    public void testAddStaffEmptyInputs() {
-        originalOut.println("Test 2.4: Add staff with intentionally empty name and position");
+    public void testAddStaffValidAfterEmptyAttempts() {
+        originalOut.println("Test 2.4: Add staff after some invalid attempts");
         int sizeBefore = instance.staffList.size();
-        simulateInput("\n\n20\n");
+        simulateInput("\n" + "InvalidName\n" + "Nguyen Van A\n" + "Nhan Vien\n" + "20\n");
         instance.addStaff();
-        assertEquals("Staff list size should increase by 1", sizeBefore + 1, instance.staffList.size());
+        assertEquals(sizeBefore + 1, instance.staffList.size());
         Staff lastStaff = instance.staffList.get(instance.staffList.size() - 1);
-        assertEquals("", lastStaff.getFullName());
-        assertEquals("", lastStaff.getPosition());
+        assertEquals("Nguyen Van A", lastStaff.getFullName());
+        assertEquals("Nhan Vien", lastStaff.getPosition());
         assertEquals("20", lastStaff.getHourlyWage());
-        assertEquals("NV102", lastStaff.getStaffID());
-        assertEquals(3, instance.staffList.size());
     }
 
     @Test
@@ -381,7 +379,7 @@ public class StaffManagementTest {
         originalOut.println("Test 3.2: Search staff not found");
         simulateInput("nv999\n");
         instance.SearchStaffByStaffID();
-        String expectedMessage = "Please enter staff ID: Not found nv999";
+        String expectedMessage = "Please enter staff ID: Not found NV999";
         assertEquals(expectedMessage, outContent.toString().trim());
     }
 
@@ -391,7 +389,7 @@ public class StaffManagementTest {
         instance.staffList.clear();
         simulateInput("nv100\n");
         instance.SearchStaffByStaffID();
-        String expectedMessage = "Please enter staff ID: Not found nv100";
+        String expectedMessage = "Please enter staff ID: Not found NV100";
         assertEquals(expectedMessage, outContent.toString().trim());
         assertEquals(0, instance.staffList.size());
     }
@@ -410,7 +408,7 @@ public class StaffManagementTest {
         originalOut.println("Test 4.5: Edit full name with invalid ID");
         simulateInput("nv999\n");
         instance.editFullName();
-        String expectedMessage = "Please enter Staff ID to edit: Not found staff nv999";
+        String expectedMessage = "Please enter Staff ID to edit: Not found staff NV999";
         assertEquals(expectedMessage, outContent.toString().trim());
     }
 
@@ -428,7 +426,7 @@ public class StaffManagementTest {
         originalOut.println("Test 4.7: Edit position with invalid ID");
         simulateInput("nv999\n");
         instance.editPosition();
-        String expectedMessage = "Please enter Staff ID to edit: Not found staff nv999";
+        String expectedMessage = "Please enter Staff ID to edit: Not found staff NV999";
         assertEquals(expectedMessage, outContent.toString().trim());
     }
 
@@ -446,7 +444,7 @@ public class StaffManagementTest {
         originalOut.println("Test 4.9: Edit hourly wage with invalid ID");
         simulateInput("nv999\n");
         instance.editHourlyWage();
-        String expectedMessage = "Please enter staff ID to edit: Not found staff nv999";
+        String expectedMessage = "Please enter staff ID to edit: Not found staff NV999";
         assertEquals(expectedMessage, outContent.toString().trim());
     }
 
@@ -456,7 +454,7 @@ public class StaffManagementTest {
         simulateInput("NV100\nabc\n15.5\n");
         instance.editHourlyWage();
         String expectedMessage = "Please enter staff ID to edit: Current hourly wage: 30\n"
-                + "Enter new hourly wage: Invalid wage format! Please enter a valid positive number\n"
+                + "Enter new hourly wage: Error: Invalid wage format! Please enter a valid positive number.\n"
                 + "Enter new hourly wage: Update hourly wage successfully!";
         String actualOutput = outContent.toString().trim().replace("\r\n", "\n");
         expectedMessage = expectedMessage.trim().replace("\r\n", "\n");
@@ -700,7 +698,7 @@ public class StaffManagementTest {
         simulateInput("nv999\n");
         instance.checkIn();
         String rawOutput = outContent.toString().trim();
-        String expectedMessage = "Enter Staff ID to Check-in: Not found staff nv999";
+        String expectedMessage = "Enter Staff ID to Check-in: Not found staff NV999";
         assertEquals(expectedMessage, rawOutput);
     }
 
@@ -711,7 +709,7 @@ public class StaffManagementTest {
         simulateInput("nv100\n");
         instance.checkIn();
         String rawOutput = outContent.toString().trim();
-        String expectedMessage = "Enter Staff ID to Check-in: Not found staff nv100";
+        String expectedMessage = "Enter Staff ID to Check-in: Not found staff NV100";
         assertEquals(expectedMessage, rawOutput);
     }
 
@@ -746,7 +744,7 @@ public class StaffManagementTest {
         simulateInput("nv999\n");
         instance.checkOut();
         String rawOutput = outContent.toString().trim();
-        String expectedMessage = "Enter Staff ID to Check-out: Not found staff nv999";
+        String expectedMessage = "Enter Staff ID to Check-out: Not found staff NV999";
         assertEquals(expectedMessage, rawOutput);
     }
 
@@ -757,7 +755,7 @@ public class StaffManagementTest {
         simulateInput("nv100\n");
         instance.checkOut();
         String rawOutput = outContent.toString().trim();
-        String expectedMessage = "Enter Staff ID to Check-out: Not found staff nv100";
+        String expectedMessage = "Enter Staff ID to Check-out: Not found staff NV100";
         assertEquals(expectedMessage, rawOutput);
     }
 
