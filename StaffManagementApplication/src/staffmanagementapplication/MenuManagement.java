@@ -16,8 +16,8 @@ public class MenuManagement {
 
     Scanner scanner;
     StaffManagement staffManagement;
-    SubMenuForRemovee submenuForRemove;
-    SubMenuForEditt submenuForEdit;
+    SubMenuForRemove submenuForRemove;
+    SubMenuForEdit submenuForEdit;
 
     private final String NUMBER_REGEX = "^\\d+$";
     Pattern NUMER_PATTERN;
@@ -29,8 +29,8 @@ public class MenuManagement {
      */
     public MenuManagement() {
         staffManagement = new StaffManagement();
-        submenuForRemove = new SubMenuForRemovee(staffManagement);
-        submenuForEdit = new SubMenuForEditt(staffManagement);
+        submenuForRemove = new SubMenuForRemove(staffManagement);
+        submenuForEdit = new SubMenuForEdit(staffManagement);
         scanner = new Scanner(System.in);
         NUMER_PATTERN = Pattern.compile(NUMBER_REGEX);
         try {

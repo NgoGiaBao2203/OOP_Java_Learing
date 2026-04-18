@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  *
  * @author giaba
  */
-public class SubMenuForRemovee {
+public class SubMenuForRemove {
 
     Scanner scanner;
     StaffManagement staffManagement;
@@ -25,7 +25,7 @@ public class SubMenuForRemovee {
      *
      * * @param sharedStaffManagement The main staff management system.
      */
-    public SubMenuForRemovee(StaffManagement sharedStaffManagement) {
+    public SubMenuForRemove(StaffManagement sharedStaffManagement) {
         staffManagement = sharedStaffManagement;
         scanner = new Scanner(System.in);
         NUMER_PATTERN = Pattern.compile(NUMBER_REGEX);
