@@ -207,7 +207,7 @@ public class StaffManagement {
     public void removeMultipleStaffByStaffID() {
         if (!staffList.isEmpty()) {
             String StaffIDs = inputString("Please enter multiple staff ID: ");
-            String[] idsToRemove = SPACE_PATTERN.split("\\s+");
+            String[] idsToRemove = SPACE_PATTERN.split(StaffIDs);
             removeMultipleIDs(idsToRemove);
             System.out.println("Removed multiple staff successfully");
         } else {
@@ -567,7 +567,7 @@ public class StaffManagement {
     private ArrayList<Staff> findStaffForSearch(String StaffID) {
         ArrayList<Staff> StaffListFound = new ArrayList<>();
         for (Staff staff : staffList) {
-            if (staff.getStaffID().toLowerCase().contains(StaffID)) {
+            if (staff.getStaffID().toUpperCase().contains(StaffID)) {
                 StaffListFound.add(staff);
             }
         }
