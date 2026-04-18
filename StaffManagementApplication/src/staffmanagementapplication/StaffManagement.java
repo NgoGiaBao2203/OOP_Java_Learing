@@ -27,7 +27,10 @@ public class StaffManagement {
     public ArrayList<Staff> staffList;
     public ArrayList<Staff> staffSortedList;
     private final String STAFF_FILE = "staff_data.txt";
-    private final Pattern WAGE_PATTERN = Pattern.compile("^\\d+(\\.\\d+)?$");
+    private final Pattern ID_PATTERN = Pattern.compile("^NV\\d{3}$");
+    private final Pattern SPACE_PATTERN = Pattern.compile("\\s+");
+    private final Pattern VALID_NAME_PATTERN = Pattern.compile("^[\\p{L}\\s]+$");
+    private final Pattern WAGE_PATTERN = Pattern.compile("^(?!0+(\\.0+)?$)\\d+(\\.\\d+)?$");
     private final HashMap<String, LocalDateTime> checkInRecords;
     public Scanner scanner;
 
@@ -155,7 +158,7 @@ public class StaffManagement {
             Staff staffToEdit = findStaffByStaffID(StaffID);
             if (staffToEdit != null) {
                 System.out.println("Current Position: " + staffToEdit.getPosition());
-                String newPosition = inputString("Enter new position: ");
+                String newPosition = inputPosition("Enter new position: ");
                 staffToEdit.setPosition(newPosition);
                 System.out.println("Update position successfully!");
             } else {
@@ -175,7 +178,7 @@ public class StaffManagement {
             Staff staffToEdit = findStaffByStaffID(StaffID);
             if (staffToEdit != null) {
                 System.out.println("Current full Name: " + staffToEdit.getFullName());
-                String newName = inputString("Enter new full Name: ");
+                String newName = inputFullName("Enter new full Name: ");
                 staffToEdit.setFullName(newName);
                 System.out.println("Update full Name successfully!");
             } else {
@@ -204,7 +207,7 @@ public class StaffManagement {
     public void removeMultipleStaffByStaffID() {
         if (!staffList.isEmpty()) {
             String StaffIDs = inputString("Please enter multiple staff ID: ");
-            String[] idsToRemove = StaffIDs.split("\\s+");
+            String[] idsToRemove = SPACE_PATTERN.split("\\s+");
             removeMultipleIDs(idsToRemove);
             System.out.println("Removed multiple staff successfully");
         } else {
@@ -250,12 +253,12 @@ public class StaffManagement {
     public void addStaff() {
         String newID = generateStaffID();
         if (newID == null) {
-            return; 
+            return;
         }
         Staff staff = new Staff("", "", "", "", 0.0);
         staff.setStaffID(newID);
-        staff.setFullName(inputString("Please enter full name: "));
-        staff.setPosition(inputString("Please enter position: "));
+        staff.setFullName(inputFullName("Please enter full name: "));
+        staff.setPosition(inputPosition("Please enter position: "));
         staff.setHourlyWage(inputStringWage("Please enter hourly wage: "));
         staffList.add(staff);
         System.out.println("Add staff successfully!");
@@ -357,35 +360,65 @@ public class StaffManagement {
         if (!f.exists()) {
             return;
         }
-        this.staffList.clear();
-        this.checkInRecords.clear();
+        ArrayList<Staff> tempStaffList = new ArrayList<>();
+        HashMap<String, LocalDateTime> tempCheckInRecords = new HashMap<>();
         try (BufferedReader br = new BufferedReader(new FileReader(f))) {
             String line = br.readLine();
             if (line == null || line.trim().isEmpty()) {
                 return;
             }
-            int numberOfStaff = Integer.parseInt(line.trim());
+            int numberOfStaff = 0;
+            try {
+                numberOfStaff = Integer.parseInt(line.trim());
+            } catch (NumberFormatException e) {
+                System.out.println("There is an error in the file. Please check the file.");
+                return;
+            }
             for (int i = 0; i < numberOfStaff; i++) {
                 String staffID = br.readLine();
                 String fullName = br.readLine();
                 String position = br.readLine();
                 String hourlyWage = br.readLine();
                 String hoursStr = br.readLine();
-                double hours = (hoursStr != null) ? Double.parseDouble(hoursStr) : 0.0;
-                this.staffList.add(new Staff(staffID, fullName, position, hourlyWage, hours));
+                if (!isValidID(staffID) || !isValidFullName(fullName)
+                        || !isValidPosition(position) || !isValidHourlyWage(hourlyWage)
+                        || !isValidTotalWorkingHours(hoursStr)) {
+                    System.out.println("There is an error in the file. Please check the file.");
+                    return;
+                }
+                double hours = Double.parseDouble(hoursStr.trim());
+                tempStaffList.add(new Staff(staffID, fullName, position, hourlyWage, hours));
             }
             line = br.readLine();
             if (line != null && !line.trim().isEmpty()) {
-                int numberOfCheckIns = Integer.parseInt(line.trim());
+                int numberOfCheckIns = 0;
+                try {
+                    numberOfCheckIns = Integer.parseInt(line.trim());
+                } catch (NumberFormatException e) {
+                    System.out.println("There is an error in the file. Please check the file.");
+                    return;
+                }
                 for (int i = 0; i < numberOfCheckIns; i++) {
                     String staffID = br.readLine();
                     String timeStr = br.readLine();
+
                     if (staffID != null && timeStr != null) {
-                        this.checkInRecords.put(staffID, LocalDateTime.parse(timeStr));
+                        try {
+                            tempCheckInRecords.put(staffID, LocalDateTime.parse(timeStr));
+                        } catch (java.time.format.DateTimeParseException e) {
+                            System.out.println("There is an error in the file. Please check the file.");
+                            return;
+                        }
                     }
                 }
             }
+            this.staffList.clear();
+            this.checkInRecords.clear();
+            this.staffList.addAll(tempStaffList);
+            this.checkInRecords.putAll(tempCheckInRecords);
             System.out.println("Data loaded successfully");
+        } catch (Exception e) {
+            System.out.println("There is an error in the file. Please check the file.");
         }
     }
 
@@ -426,6 +459,88 @@ public class StaffManagement {
             }
         }
         return false;
+    }
+
+    /**
+     * Checks if the full name is correct. It needs at least two words.
+     *
+     * * @param name The full name of the staff.
+     * @return true if the name is correct, false if not.
+     */
+    private boolean isValidFullName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            return false;
+        }
+        if (!VALID_NAME_PATTERN.matcher(name).matches()) {
+            return false;
+        }
+        String[] words = SPACE_PATTERN.split(name.trim());
+        if (words.length < 2) {
+            return false;
+        }
+        for (String word : words) {
+            if (word.length() >= 2) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the job position is correct. It needs at least two letters.
+     *
+     * * @param position The job position of the staff.
+     * @return true if the position is correct, false if not.
+     */
+    private boolean isValidPosition(String position) {
+        if (position == null || position.trim().isEmpty()) {
+            return false;
+        }
+        if (!VALID_NAME_PATTERN.matcher(position).matches()) {
+            return false;
+        }
+        return SPACE_PATTERN.matcher(position).replaceAll("").length() >= 2;
+    }
+
+    /**
+     * Checks if the staff ID is in the right format.
+     *
+     * * @param id The ID of the staff.
+     * @return true if the ID is correct, false if not.
+     */
+    private boolean isValidID(String id) {
+        return id != null && ID_PATTERN.matcher(id).matches();
+    }
+
+    /**
+     * Checks if the hourly wage is a correct number format.
+     *
+     * * @param wage The hourly wage of the staff.
+     * @return true if the wage is correct, false if not.
+     */
+    private boolean isValidHourlyWage(String wage) {
+        if (wage == null || wage.trim().isEmpty()) {
+            return false;
+        }
+        return WAGE_PATTERN.matcher(wage.trim()).matches();
+    }
+
+    /**
+     * Checks if the working hours are correct. Hours cannot be less than zero.
+     *
+     * * @param hoursStr The total working hours.
+     * @return true if the hours are correct, false if not.
+     */
+    private boolean isValidTotalWorkingHours(String hoursStr) {
+        if (hoursStr == null || hoursStr.trim().isEmpty()) {
+            return false;
+        }
+        try {
+            double hours = Double.parseDouble(hoursStr.trim());
+            return hours >= 0.0;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     /**
@@ -505,7 +620,7 @@ public class StaffManagement {
         if (fullName == null || fullName.trim().isEmpty()) {
             return "";
         }
-        String[] parts = fullName.trim().split("\\s+");
+        String[] parts = SPACE_PATTERN.split(fullName.trim());
         return parts[parts.length - 1];
     }
 
@@ -536,20 +651,14 @@ public class StaffManagement {
      * @return
      */
     private String inputStringWage(String title) {
-        String input;
-        String result = "";
-        boolean flag = true;
-        while (flag) {
+        while (true) {
             System.out.print(title);
-            input = scanner.nextLine().trim().toLowerCase();
-            if (WAGE_PATTERN.matcher(input).matches()) {
-                result = input;
-                flag = false;
-            } else {
-                System.out.println("Invalid wage format! Please enter a valid positive number");
+            String input = scanner.nextLine().trim();
+            if (isValidHourlyWage(input)) {
+                return input;
             }
+            System.out.println("Error: Invalid wage format! Please enter a valid positive number.");
         }
-        return result;
     }
 
     /**
@@ -560,8 +669,53 @@ public class StaffManagement {
      */
     private String inputString(String title) {
         String input;
-        System.out.print(title);
-        input = scanner.nextLine().trim().toLowerCase();
-        return input;
+        while (true) {
+            System.out.print(title);
+            input = scanner.nextLine().trim().toUpperCase();
+            if (input.isEmpty()) {
+                System.out.println("Input cannot be empty! Please try again.");
+                continue;
+            }
+            if (ID_PATTERN.matcher(input).matches()) {
+                return input;
+            } else {
+                System.out.println("Error: Input contains invalid special characters.");
+            }
+        }
+    }
+
+    /**
+     * Prompts the user to enter a full name and applies strict validation.
+     *
+     * * @param title The message displayed to prompt the user.
+     * @return A valid full name string in lowercase.
+     */
+    private String inputFullName(String title) {
+        while (true) {
+            System.out.print(title);
+            String input = scanner.nextLine().trim();
+            if (isValidFullName(input.toLowerCase())) {
+                return input;
+            }
+            System.out.println("Error: Invalid name. Must contain at least 2 words, no special characters,"
+                    + "and no single letters like.");
+        }
+    }
+
+    /**
+     * Prompts the user to enter a job position with flexible validation.
+     *
+     * * @param title The message displayed to prompt the user.
+     * @return A valid job position string.
+     */
+    private String inputPosition(String title) {
+        while (true) {
+            System.out.print(title);
+            String input = scanner.nextLine().trim();
+            if (isValidPosition(input.toLowerCase())) {
+                return input;
+            }
+            System.out.println("Error: Invalid position. Must contain at least 2 character and no special characters.");
+        }
     }
 }
