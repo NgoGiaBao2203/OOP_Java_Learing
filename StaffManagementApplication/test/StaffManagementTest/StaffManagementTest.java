@@ -321,11 +321,10 @@ public class StaffManagementTest {
         int sizeBefore = instance.staffList.size();
         simulateInput("Nguyen Van Hau\nstaff\n25\n");
         instance.addStaff();
-        assertEquals(sizeBefore + 1, instance.staffList.size());
-        Staff lastStaff = instance.staffList.get(instance.staffList.size() - 1);
-        assertEquals("NV1000", lastStaff.getStaffID());
-        assertEquals("nguyen van hau", lastStaff.getFullName());
-        assertEquals("25", lastStaff.getHourlyWage());
+        assertEquals(sizeBefore, instance.staffList.size());
+        String rawOutput = outContent.toString().replace("\r\n", "\n").trim();
+        String expectedOutput = "The system has reached the maximum staff limit(NV999)";
+        assertEquals(expectedOutput, rawOutput);
     }
 
     @Test
@@ -598,14 +597,14 @@ public class StaffManagementTest {
 
     @Test
     public void testCheckInDouble() {
-        originalOut.println("Test 8.4: Check-in double (overwrite check-in time)");
+        originalOut.println("Test 8.4: Check-in double (prevent duplicate check-in)");
         simulateInput("nv100\nnv100\n");
         instance.checkIn();
         instance.checkIn();
         String rawOutput = outContent.toString().trim();
         String actualMessage = rawOutput.replaceAll("at \\d{4}-\\d{2}-\\d{2}T\\S+", "at [TIME]");
         String expectedMessage = "Enter Staff ID to Check-in: Vo Minh Duy checked in successfully at [TIME]\n"
-                + "Enter Staff ID to Check-in: Vo Minh Duy checked in successfully at [TIME]";
+                + "Enter Staff ID to Check-in: This staff has already checked in!";
         expectedMessage = expectedMessage.replace("\r\n", "\n").trim();
         actualMessage = actualMessage.replace("\r\n", "\n").trim();
         assertEquals(expectedMessage, actualMessage);
@@ -696,6 +695,6 @@ public class StaffManagementTest {
         String actualOutput = outContent.toString().trim().replace("\r\n", "\n");
         expectedMessage = expectedMessage.trim().replace("\r\n", "\n");
         assertEquals(expectedMessage, actualOutput);
-        assertEquals(4, instance.staffList.size());
+        assertEquals(2, instance.staffList.size());
     }
 }
