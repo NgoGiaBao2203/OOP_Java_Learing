@@ -61,7 +61,7 @@ public class SubMenuForEdit {
                         flag = true;
                         break;
                     case 4:
-                        flag = false; // Stop the loop and go back
+                        flag = false; 
                         break;
                     default:
                         flag = true;
@@ -72,7 +72,7 @@ public class SubMenuForEdit {
     }
 
     /**
-     * Checks if the user typed a correct number (1, 2, 3, or 4).
+     * Checks if the user typed a correct number.
      * * @param choice The text the user typed.
      * @return true if the choice is good, false if it is bad.
      */

@@ -199,7 +199,7 @@ public class StaffManagement {
     }
 
     /**
-     * Delete many staff people using their IDs.
+     * Delete many staff person using their IDs.
      */
     public void removeMultipleStaffByStaffID() {
         if (!staffList.isEmpty()) {

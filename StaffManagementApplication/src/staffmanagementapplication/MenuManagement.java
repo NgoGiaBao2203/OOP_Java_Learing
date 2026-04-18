@@ -23,8 +23,9 @@ public class MenuManagement {
     Pattern NUMER_PATTERN;
 
     /**
-     * Setup menu management, load data from file and initialize submenu for
+     * Setup menu management, load data from file and initialize sub menu for
      * remove and edit.
+     *
      */
     public MenuManagement() {
         staffManagement = new StaffManagement();

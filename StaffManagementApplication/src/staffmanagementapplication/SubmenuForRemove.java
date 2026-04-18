@@ -22,6 +22,7 @@ public class SubMenuForRemove {
 
     /**
      * Creates a new menu for removing staff.
+     *
      * * @param sharedStaffManagement The main staff management system.
      */
     public SubMenuForRemove(StaffManagement sharedStaffManagement) {
@@ -31,8 +32,8 @@ public class SubMenuForRemove {
     }
 
     /**
-     * Shows the menu and runs the user's choice. 
-     * It loops until the user chooses to go back (option 4).
+     * Shows the menu and runs the user's choice. It loops until the user
+     * chooses to go back (option 4).
      */
     public void SubmenuForRemoveOptions() {
         Boolean flag;
@@ -61,7 +62,7 @@ public class SubMenuForRemove {
                         flag = true;
                         break;
                     case 4:
-                        flag = false; // Stop the loop and go back
+                        flag = false;
                         break;
                     default:
                         flag = true;
@@ -72,7 +73,8 @@ public class SubMenuForRemove {
     }
 
     /**
-     * Checks if the user typed a correct number (1, 2, 3, or 4).
+     * Checks if the user typed a correct number.
+     *
      * * @param choice The text the user typed.
      * @return true if the choice is good, false if it is bad.
      */
@@ -94,6 +96,7 @@ public class SubMenuForRemove {
 
     /**
      * Asks the user to type their choice.
+     *
      * * @return The text the user typed.
      */
     private String inputChoice() {
