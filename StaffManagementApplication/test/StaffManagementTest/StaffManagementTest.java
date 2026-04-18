@@ -350,7 +350,7 @@ public class StaffManagementTest {
                 + "Please enter full name: "
                 + "Please enter position: "
                 + "Please enter hourly wage: "
-                + "Invalid wage format! Please enter a valid positive number\n"
+                + "Error: Invalid wage format! Please enter a valid positive number.\n"
                 + "Please enter hourly wage: "
                 + "Add staff successfully!\n";
         assertEquals(expectedOutput, rawOutput);
@@ -367,7 +367,7 @@ public class StaffManagementTest {
                 + "Please enter full name: "
                 + "Please enter position: "
                 + "Please enter hourly wage: "
-                + "Invalid wage format! Please enter a valid positive number\n"
+                + "Error: Invalid wage format! Please enter a valid positive number.\n"
                 + "Please enter hourly wage: "
                 + "Add staff successfully!\n";
         assertEquals(expectedOutput, rawOutput);
@@ -467,7 +467,7 @@ public class StaffManagementTest {
         simulateInput("NV100\n-5\n15\n");
         instance.editHourlyWage();
         String expectedMessage = "Please enter staff ID to edit: Current hourly wage: 30\n"
-                + "Enter new hourly wage: Invalid wage format! Please enter a valid positive number\n"
+                + "Enter new hourly wage: Error: Invalid wage format! Please enter a valid positive number.\n"
                 + "Enter new hourly wage: Update hourly wage successfully!";
         assertEquals(expectedMessage.trim().replace("\r\n", "\n"),
                 outContent.toString().trim().replace("\r\n", "\n"));
@@ -480,23 +480,11 @@ public class StaffManagementTest {
         simulateInput("NV100\n!@#$\n15\n");
         instance.editHourlyWage();
         String expectedMessage = "Please enter staff ID to edit: Current hourly wage: 30\n"
-                + "Enter new hourly wage: Invalid wage format! Please enter a valid positive number\n"
+                + "Enter new hourly wage: Error: Invalid wage format! Please enter a valid positive number.\n"
                 + "Enter new hourly wage: Update hourly wage successfully!";
         assertEquals(expectedMessage.trim().replace("\r\n", "\n"),
                 outContent.toString().trim().replace("\r\n", "\n"));
         assertEquals("15", instance.staffList.get(0).getHourlyWage());
-    }
-
-    @Test
-    public void testEditHourlyWageZeroAccepted() {
-        originalOut.println("Test 4.13: Edit hourly wage with zero (accepted by WAGE_PATTERN)");
-        simulateInput("NV100\n0\n");
-        instance.editHourlyWage();
-        String expectedMessage = "Please enter staff ID to edit: Current hourly wage: 30\n"
-                + "Enter new hourly wage: Update hourly wage successfully!";
-        assertEquals(expectedMessage.trim().replace("\r\n", "\n"),
-                outContent.toString().trim().replace("\r\n", "\n"));
-        assertEquals("0", instance.staffList.get(0).getHourlyWage());
     }
 
     @Test
@@ -677,22 +665,6 @@ public class StaffManagementTest {
     }
 
     @Test
-    public void testCalculateSalaryZeroWageAccepted() {
-        originalOut.println("Test 7.8: Calculate salary with zero wage (matches WAGE_PATTERN, salary = 0)");
-        instance.staffList.get(0).setHourlyWage("0");
-        instance.staffList.get(0).setTotalWorkingHours(8.0);
-        instance.calculateMonthlySalary();
-        String expectedMessage = "+---------+----------------------+---------------+---------------+----------------+\n"
-                + "|   ID    |      Fullname        |  Hourly Wage  |  Total Hours  |  Total Salary  |\n"
-                + "+---------+----------------------+---------------+---------------+----------------+\n"
-                + "|NV100    |Vo Minh Duy           |0              |8.00           |0.00            |\n"
-                + "|NV101    |Tran Quoc Ba          |40             |0.00           |0.00            |\n"
-                + "+---------+----------------------+---------------+---------------+----------------+";
-        assertEquals(expectedMessage.trim().replace("\r\n", "\n"),
-                outContent.toString().trim().replace("\r\n", "\n"));
-    }
-
-    @Test
     public void testCheckInNotFound() {
         originalOut.println("Test 8.2: Check-in with invalid ID");
         simulateInput("nv999\n");
@@ -830,12 +802,9 @@ public class StaffManagementTest {
         }
         instance.staffList.clear();
         instance.loadStaffFile();
-        assertEquals(1, instance.staffList.size());
-        Staff loaded = instance.staffList.get(0);
-        assertEquals("NV200", loaded.getStaffID());
-        assertEquals("Le Van E", loaded.getFullName());
-        assertEquals("-30", loaded.getHourlyWage());
-        assertEquals(0.0, loaded.getTotalWorkingHours(), 0.0001);
+        assertEquals("There is an error in the file. Please check the file.",
+                outContent.toString().trim());
+        assertEquals(0, instance.staffList.size());
     }
 
     @Test
@@ -846,14 +815,15 @@ public class StaffManagementTest {
             fw.write("NV201\n");
             fw.write("Le Van F\n");
             fw.write("Staff\n");
-            fw.write("0\n");
+            fw.write("0\n");    // WAGE_PATTERN rejects "0" → isValidHourlyWage returns false → abort
             fw.write("0.0\n");
             fw.write("0\n");
         }
         instance.staffList.clear();
         instance.loadStaffFile();
-        assertEquals(1, instance.staffList.size());
-        assertEquals("0", instance.staffList.get(0).getHourlyWage());
+        assertEquals("There is an error in the file. Please check the file.",
+                outContent.toString().trim());
+        assertEquals(0, instance.staffList.size());
     }
 
     @Test
@@ -870,8 +840,9 @@ public class StaffManagementTest {
         }
         instance.staffList.clear();
         instance.loadStaffFile();
-        assertEquals(1, instance.staffList.size());
-        assertEquals("@#$%", instance.staffList.get(0).getHourlyWage());
+        assertEquals("There is an error in the file. Please check the file.",
+                outContent.toString().trim());
+        assertEquals(0, instance.staffList.size());
     }
 
     @Test
@@ -888,11 +859,9 @@ public class StaffManagementTest {
         }
         instance.staffList.clear();
         instance.loadStaffFile();
-        assertEquals(1, instance.staffList.size());
-        Staff loaded = instance.staffList.get(0);
-        assertEquals("N@me $pecial!", loaded.getFullName());
-        assertEquals("#Dev/Ops!", loaded.getPosition());
-        assertEquals("25", loaded.getHourlyWage());
+        assertEquals("There is an error in the file. Please check the file.",
+                outContent.toString().trim());
+        assertEquals(0, instance.staffList.size());
     }
 
     @Test
@@ -911,13 +880,7 @@ public class StaffManagementTest {
         instance.loadStaffFile();
         outContent.reset();
         instance.calculateMonthlySalary();
-        String expectedMessage = "+---------+----------------------+---------------+---------------+----------------+\n"
-                + "|   ID    |      Fullname        |  Hourly Wage  |  Total Hours  |  Total Salary  |\n"
-                + "+---------+----------------------+---------------+---------------+----------------+\n"
-                + "|NV200    |Le Van E              |-30            |8.00           |ERROR WAGE      |\n"
-                + "+---------+----------------------+---------------+---------------+----------------+";
-        assertEquals(expectedMessage.trim().replace("\r\n", "\n"),
-                outContent.toString().trim().replace("\r\n", "\n"));
+        assertEquals("List staff is empty", outContent.toString().trim());
     }
 
     @Test
@@ -936,12 +899,6 @@ public class StaffManagementTest {
         instance.loadStaffFile();
         outContent.reset();
         instance.calculateMonthlySalary();
-        String expectedMessage = "+---------+----------------------+---------------+---------------+----------------+\n"
-                + "|   ID    |      Fullname        |  Hourly Wage  |  Total Hours  |  Total Salary  |\n"
-                + "+---------+----------------------+---------------+---------------+----------------+\n"
-                + "|NV202    |Le Van G              |@#$%           |5.00           |ERROR WAGE      |\n"
-                + "+---------+----------------------+---------------+---------------+----------------+";
-        assertEquals(expectedMessage.trim().replace("\r\n", "\n"),
-                outContent.toString().trim().replace("\r\n", "\n"));
+        assertEquals("List staff is empty", outContent.toString().trim());
     }
 }
